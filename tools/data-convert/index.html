@@ -5,21 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>JSON / CSV / YAML 转换与格式化</title>
   <link rel="stylesheet" href="../../assets/css/base.css" />
+  <link rel="stylesheet" href="../../assets/css/tool-workbench.css" />
   <style>
     .toolbar { padding:12px; border-bottom:1px solid var(--border); background: rgba(10,16,34,.6); display:flex; gap:8px; flex-wrap:wrap; }
-    .btn { padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:#0f1a38; color:#e6e9f4; cursor:pointer; transition:.12s; }
+    .btn { padding:10px 12px; border-radius:4px; border:1px solid var(--border); background:var(--card); color:var(--text); cursor:pointer; transition:.12s; }
     .btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
     .layout { display:grid; grid-template-columns: 1fr 1fr; gap:16px; padding:16px; }
-    textarea { width:100%; height: calc(100vh - 200px); border:1px solid var(--border); border-radius:12px; background:#0a122c; color:#e6e9f4; padding:12px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
-    select { padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:#0f1a38; color:#e6e9f4; }
+    textarea { width:100%; height: calc(100vh - 200px); border:1px solid var(--border); border-radius:6px; background:var(--surface-lowest); color:var(--text); padding:12px; font-family:var(--mono); }
+    select { padding:10px 12px; border-radius:4px; border:1px solid var(--border); background:var(--surface-low); color:var(--text); }
+    @media(max-width:760px){.layout{grid-template-columns:1fr}textarea{height:300px}}
   </style>
 </head>
 <body>
-  <header class="tool-header">
-    <a class="back" href="../../index.html">&lt; 返回首页</a>
-    <div class="tool-title">JSON / CSV / YAML 转换与格式化</div>
-    <div class="tool-bar"></div>
-  </header>
+  <header data-site-header><a class="back" href="../../index.html">&lt; 返回首页</a><button data-language-toggle>中 / EN</button></header>
 
   <div class="toolbar">
     <select id="from">
@@ -173,6 +171,7 @@
     $('minify').onclick = ()=>{ try{ right.value = JSON.stringify(JSON.parse(left.value)); }catch(e){ right.value='压缩失败：'+e.message; } };
     $('copy').onclick = async ()=> { try{ await navigator.clipboard.writeText(right.value); const t=$('copy').textContent; $('copy').textContent='已复制'; setTimeout(()=>$('copy').textContent=t,900);}catch(e){} };
   </script>
+  <script src="../../assets/js/i18n.js"></script><script>window.ToolkitPage={root:'../../',tool:true,title:'JSON / CSV / YAML Converter'};</script><script src="../../assets/js/site-shell.js"></script>
 </body>
 </html>
 
