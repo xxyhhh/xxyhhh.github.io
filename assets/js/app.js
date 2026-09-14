@@ -1,6 +1,6 @@
 // 首页脚本：搜索 + 分类过滤 + 卡片渲染
 const tools = [
-  { id: 'image-tools', name: '图片工具集', desc: '在线图片处理与格式转换',
+  { id: 'image-tools', name: '图片工具集', desc: '本地旋转、水平翻转，并支持 JPG、PNG、WebP 格式转换与下载（最大 10MB）',
     category: '图像工具', tags: ['image','编辑','转换'], href: '/tools/image-tools/' },
   { id: 'cropper', name: '图片裁剪（Cropper）', desc: '基于 CropperJS 的最小裁剪工具',
     category: '图像工具', tags: ['crop','裁剪'], href: '/tools/cropper/' },
@@ -23,7 +23,7 @@ const tools = [
   { id: 'qrcode', name: '二维码生成器', desc: '基于 qrcodejs 的二维码生成',
     category: '编码生成', tags: ['qrcode','二维码'], href: '/tools/qrcode/' },
   { id: 'm3u8player', name: 'M3U8/HLS 播放器', desc: '基于腾讯云 TCPlayer 的在线播放器',
-    category: '音视频', tags: ['video','hls'], href: '/tools/m3u8player/' },
+    category: '音视频', tags: ['video','hls'], href: '/tools/m3u8player/', status: 'maintenance' },
 ];
 
 // 兼容 GitHub Pages 子路径：将 href 改为相对路径
@@ -35,18 +35,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const chips = document.querySelectorAll('.chip');
 
   function render(list) {
-    grid.innerHTML = list.map(t => `
-      <div class="card">
-        <div class="tags">
-          <span class="tag">${t.category}</span>
+    grid.innerHTML = list.map(t => {
+      const isMaintenance = t.status === 'maintenance';
+      return `
+        <div class="card${isMaintenance ? ' maintenance' : ''}"${isMaintenance ? ' aria-disabled="true"' : ''}>
+          <div class="tags">
+            <span class="tag">${t.category}</span>
+            ${isMaintenance ? '<span class="status-badge maintenance">维护中</span>' : ''}
+          </div>
+          <h3>${t.name}</h3>
+          <p>${t.desc}</p>
+          <div class="actions">
+            ${isMaintenance
+              ? '<button type="button" class="button disabled" disabled>暂不可用</button>'
+              : `<a class="button primary" href="${withBase(t.href)}">进入工具</a>`}
+          </div>
         </div>
-        <h3>${t.name}</h3>
-        <p>${t.desc}</p>
-        <div class="actions">
-          <a class="button primary" href="${withBase(t.href)}">进入工具</a>
-        </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
   }
 
   let state = { keyword: '', category: '全部' };
