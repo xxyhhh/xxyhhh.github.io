@@ -9,6 +9,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        :root {
+            --qr-accent: #234b3b;
+            --qr-accent-hover: #2f6a50;
+            --qr-page-bg: #eef4ef;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -17,7 +23,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--qr-page-bg);
             min-height: 100vh;
             color: #333;
             padding: 20px;
@@ -33,7 +39,7 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--qr-accent) 0%, var(--qr-accent-hover) 100%);
             color: white;
             padding: 30px;
             text-align: center;
@@ -70,8 +76,8 @@
         }
 
         .tab.active {
-            border-bottom-color: #667eea;
-            color: #667eea;
+            border-bottom-color: var(--qr-accent);
+            color: var(--qr-accent);
         }
 
         .tab-content {
@@ -104,7 +110,7 @@
 
         .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--qr-accent);
         }
 
         .options-grid {
@@ -122,11 +128,11 @@
 
         .option-group h4 {
             margin-bottom: 15px;
-            color: #667eea;
+            color: var(--qr-accent);
         }
 
         .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--qr-accent);
             color: white;
             border: none;
             padding: 12px 25px;
@@ -139,11 +145,16 @@
         }
 
         .btn:hover {
+            background: var(--qr-accent-hover);
             transform: translateY(-2px);
         }
 
         .btn-secondary {
             background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5f666d;
         }
 
         .qr-result {
@@ -227,14 +238,14 @@
         }
 
         .example-section {
-            background: #f0f8ff;
+            background: #f4f8f5;
             padding: 20px;
             border-radius: 10px;
             margin-top: 20px;
         }
 
         .example-section h4 {
-            color: #007bff;
+            color: var(--qr-accent-hover);
             margin-bottom: 10px;
         }
 
@@ -243,7 +254,7 @@
             padding: 10px;
             background: white;
             border-radius: 5px;
-            border-left: 4px solid #007bff;
+            border-left: 4px solid var(--qr-accent-hover);
             word-break: break-all;
         }
 
@@ -284,8 +295,8 @@
                     <label>输入文字或网址：</label>
                     <textarea id="text-input" rows="3" placeholder="请输入要生成二维码的文字内容或网址链接..."></textarea>
                 </div>
-                <div class="info-section" style="margin-top: 15px; padding: 12px; background: #e3f2fd; border-radius: 8px;">
-                    <p style="margin: 0; color: #1976d2; font-size: 14px;">
+                <div class="info-section" style="margin-top: 15px; padding: 12px; background: #edf6f0; border-radius: 8px;">
+                    <p style="margin: 0; color: #2f6a50; font-size: 14px;">
                         <i class="fas fa-info-circle"></i> 
                         <strong>提示：</strong>微信扫码对纯文本支持有限，无法直接预览，只能底部复制文本。
                     </p>
