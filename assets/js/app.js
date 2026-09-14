@@ -1,89 +1,16 @@
-// 首页脚本：搜索 + 分类过滤 + 卡片渲染
-const tools = [
-  { id: 'image-tools', name: '图片工具集', desc: '本地旋转、水平翻转，并支持 JPG、PNG、WebP 格式转换与下载（最大 10MB）',
-    category: '图像工具', tags: ['image','编辑','转换'], href: '/tools/image-tools/' },
-  { id: 'cropper', name: '图片裁剪（Cropper）', desc: '基于 CropperJS 的最小裁剪工具',
-    category: '图像工具', tags: ['crop','裁剪'], href: '/tools/cropper/' },
-  { id: 'time-converter', name: '时间戳/时区转换器', desc: 'Unix ⇄ 日期，多时区&复制',
-    category: '编码生成', tags: ['time','timestamp','timezone'], href: '/tools/time-converter/' },
-  { id: 'text-tools', name: '文本整理工具', desc: '大小写、去重、排序、前后缀、分隔符互转',
-    category: '编码生成', tags: ['text','format'], href: '/tools/text-tools/' },
-  { id: 'codec', name: 'Base64/URL/UTF-8 编解码', desc: '字符串/文件 Base64、URL、UTF-8',
-    category: '编码生成', tags: ['base64','url','utf8'], href: '/tools/codec/' },
-  { id: 'data-convert', name: 'JSON/CSV/YAML 转换', desc: '相互转换、格式化/压缩',
-    category: '编码生成', tags: ['json','csv','yaml'], href: '/tools/data-convert/' },
-  { id: 'idgen', name: 'UUID/随机密码/Nonce 生成', desc: 'v4、v7，多字符集与长度',
-    category: '编码生成', tags: ['uuid','nonce','password'], href: '/tools/idgen/' },
-  { id: 'regex', name: '正则测试台', desc: '实时匹配、高亮、分组显示，支持标志位',
-    category: '编码生成', tags: ['regex','re'], href: '/tools/regex/' },
-  { id: 'cron', name: 'Cron 可视化', desc: '解析下次触发时间，人类可读说明',
-    category: '编码生成', tags: ['cron','schedule'], href: '/tools/cron/' },
-  { id: 'jwt', name: 'JWT 解码与校验', desc: '本地解析 Header/Payload，HS 校验（可选）',
-    category: '编码生成', tags: ['jwt','token'], href: '/tools/jwt/' },
-  { id: 'qrcode', name: '二维码生成器', desc: '基于 qrcodejs 的二维码生成',
-    category: '编码生成', tags: ['qrcode','二维码'], href: '/tools/qrcode/' },
-  { id: 'm3u8player', name: 'M3U8/HLS 播放器', desc: '基于腾讯云 TCPlayer 的在线播放器',
-    category: '音视频', tags: ['video','hls'], href: '/tools/m3u8player/', status: 'maintenance' },
-];
-
-// 兼容 GitHub Pages 子路径：将 href 改为相对路径
-function withBase(p) { return (window.__BASE_PATH__ || '') + p; }
-
-document.addEventListener('DOMContentLoaded', () => {
-  const grid = document.querySelector('.grid');
-  const searchInput = document.querySelector('#search');
-  const chips = document.querySelectorAll('.chip');
-
-  function render(list) {
-    grid.innerHTML = list.map(t => {
-      const isMaintenance = t.status === 'maintenance';
-      return `
-        <div class="card${isMaintenance ? ' maintenance' : ''}"${isMaintenance ? ' aria-disabled="true"' : ''}>
-          <div class="tags">
-            <span class="tag">${t.category}</span>
-            ${isMaintenance ? '<span class="status-badge maintenance">维护中</span>' : ''}
-          </div>
-          <h3>${t.name}</h3>
-          <p>${t.desc}</p>
-          <div class="actions">
-            ${isMaintenance
-              ? '<button type="button" class="button disabled" disabled>暂不可用</button>'
-              : `<a class="button primary" href="${withBase(t.href)}">进入工具</a>`}
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  let state = { keyword: '', category: '全部' };
-
-  function apply() {
-    const kw = state.keyword.trim().toLowerCase();
-    const list = tools.filter(t => {
-      const okCat = state.category === '全部' || t.category === state.category;
-      const text = (t.name + ' ' + t.desc + ' ' + t.tags.join(' ')).toLowerCase();
-      const okKw = !kw || text.includes(kw);
-      return okCat && okKw;
-    });
-    render(list);
-  }
-
-  // 绑定搜索
-  searchInput?.addEventListener('input', (e) => {
-    state.keyword = e.target.value || '';
-    apply();
-  });
-
-  // 绑定分类
-  chips.forEach(chip => {
-    chip.addEventListener('click', () => {
-      chips.forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      state.category = chip.dataset.value;
-      apply();
-    });
-  });
-
-  render(tools);
-});
-
+const tools=[
+{id:'id-photo',name:{zh:'证件照制作',en:'ID Photo Maker'},desc:{zh:'本地裁剪、智能抠图、白蓝红黑换底与高清导出',en:'Local crop, smart cutout, background replacement and HD export'},category:'image',tags:['photo','证件照','background'],href:'/tools/id-photo/'},
+{id:'image-tools',name:{zh:'图片工具集',en:'Image Tools'},desc:{zh:'本地旋转、水平翻转，并支持 JPG、PNG、WebP 格式转换与下载（最大 10MB）',en:'Rotate, flip and convert JPG, PNG and WebP images locally (10 MB max)'},category:'image',tags:['image','编辑','convert'],href:'/tools/image-tools/'},
+{id:'cropper',name:{zh:'图片裁剪',en:'Image Cropper'},desc:{zh:'调整裁剪框、旋转、翻转并导出 PNG',en:'Crop, rotate, flip and export PNG images'},category:'image',tags:['crop','裁剪'],href:'/tools/cropper/'},
+{id:'time-converter',name:{zh:'时间戳/时区转换器',en:'Timestamp & Timezone'},desc:{zh:'Unix 时间戳与日期互转，支持多时区和复制',en:'Convert Unix timestamps and dates across time zones'},category:'code',tags:['time','timestamp'],href:'/tools/time-converter/'},
+{id:'text-tools',name:{zh:'文本整理工具',en:'Text Utilities'},desc:{zh:'大小写、去重、排序、前后缀和分隔符互转',en:'Case, deduplication, sorting, affixes and delimiters'},category:'code',tags:['text','format'],href:'/tools/text-tools/'},
+{id:'codec',name:{zh:'Base64/URL/UTF-8 编解码',en:'Base64 / URL / UTF-8 Codec'},desc:{zh:'字符串与文件的 Base64、URL 和 UTF-8 编解码',en:'Encode and decode strings or files locally'},category:'code',tags:['base64','url','utf8'],href:'/tools/codec/'},
+{id:'data-convert',name:{zh:'JSON/CSV/YAML 转换',en:'JSON / CSV / YAML Converter'},desc:{zh:'格式互转、格式化、压缩与结果复制',en:'Convert, format, minify and copy structured data'},category:'code',tags:['json','csv','yaml'],href:'/tools/data-convert/'},
+{id:'idgen',name:{zh:'UUID/随机密码/Nonce',en:'UUID / Password / Nonce'},desc:{zh:'生成 UUID v4/v7、随机密码和 Nonce',en:'Generate UUID v4/v7, passwords and nonces'},category:'code',tags:['uuid','nonce'],href:'/tools/idgen/'},
+{id:'regex',name:{zh:'正则测试台',en:'Regex Playground'},desc:{zh:'实时匹配、高亮、分组显示和常用语法速查',en:'Live matches, highlights, groups and syntax reference'},category:'code',tags:['regex','re'],href:'/tools/regex/'},
+{id:'cron',name:{zh:'Cron 可视化',en:'Cron Visualizer'},desc:{zh:'解析触发时间并生成人类可读说明',en:'Inspect schedules and generate human-readable descriptions'},category:'code',tags:['cron'],href:'/tools/cron/'},
+{id:'jwt',name:{zh:'JWT 解码与校验',en:'JWT Inspector'},desc:{zh:'本地解析 Header/Payload，并可选 HS 校验',en:'Inspect Header and Payload with optional HS verification'},category:'code',tags:['jwt'],href:'/tools/jwt/'},
+{id:'qrcode',name:{zh:'二维码生成器',en:'QR Code Generator'},desc:{zh:'自定义内容、尺寸和颜色，生成并下载二维码',en:'Create and download QR codes with custom size and colors'},category:'code',tags:['qrcode','二维码'],href:'/tools/qrcode/'},
+{id:'m3u8player',name:{zh:'M3U8/HLS 播放器',en:'M3U8 / HLS Player'},desc:{zh:'腾讯云播放器 License 已过期，功能维护中',en:'Unavailable while the Tencent Cloud player license is expired'},category:'media',tags:['video','hls'],status:'maintenance'}];
+ToolkitI18n.registerTranslations({'zh-CN':{'home.eyebrow':'隐私优先 · 纯前端运行','home.title':'安全、纯本地运行的实用工具集','home.lead':'无需注册，无需上传。常用图片、文本、编码和开发工具直接在浏览器内完成。','home.noUpload':'不上传用户内容','home.noAccount':'无需账号','home.openSource':'源码公开','home.search':'搜索工具，例如：图片、二维码、JSON','category.all':'全部','category.image':'图片工具','category.code':'编码与开发','category.media':'音视频','card.enter':'进入工具','card.maintenance':'维护中','card.unavailable':'暂不可用','empty.title':'没有匹配的工具','empty.clear':'清除搜索'},en:{'home.eyebrow':'PRIVACY-FIRST · CLIENT-SIDE','home.title':'Secure, 100% client-side utility toolkit','home.lead':'No account and no uploads. Useful image, text, encoding and developer tools run directly in your browser.','home.noUpload':'No user-content uploads','home.noAccount':'No account required','home.openSource':'Source available','home.search':'Search tools: image, QR, JSON…','category.all':'All','category.image':'Image','category.code':'Code & data','category.media':'Media','card.enter':'Open tool','card.maintenance':'Maintenance','card.unavailable':'Unavailable','empty.title':'No matching tools','empty.clear':'Clear search'}});
+const state={keyword:'',category:'all'},grid=document.querySelector('#tool-grid'),searchInput=document.querySelector('#search'),categoryRoot=document.querySelector('#categories'),categoryKeys=['all','image','code','media'];function withBase(p){return(window.__BASE_PATH__||'')+p}function filtered(){const k=state.keyword.trim().toLowerCase();return tools.filter(t=>(state.category==='all'||t.category===state.category)&&(!k||`${t.name.zh} ${t.name.en} ${t.desc.zh} ${t.desc.en} ${t.tags.join(' ')}`.toLowerCase().includes(k)))}function render(){const lang=ToolkitI18n.getLanguage(),tr=ToolkitI18n.translate;categoryRoot.innerHTML=categoryKeys.map(c=>`<button type="button" class="chip${state.category===c?' active':''}" data-category="${c}">${tr('category.'+c)}</button>`).join('');categoryRoot.querySelectorAll('button').forEach(b=>b.onclick=()=>{state.category=b.dataset.category;render()});const list=filtered();grid.innerHTML=list.length?list.map(t=>{const m=t.status==='maintenance',name=lang==='en'?t.name.en:t.name.zh,desc=lang==='en'?t.desc.en:t.desc.zh;return `<article class="card${m?' maintenance':''}"${m?' aria-disabled="true"':''}><div class="tags"><span class="tag">${tr('category.'+t.category)}</span>${m?'<span class="status-badge maintenance">维护中</span>':''}</div><h2>${name}</h2><p>${desc}</p><div class="actions">${m?'<button type="button" class="button disabled" disabled>暂不可用</button>':`<a class="button primary" href="${withBase(t.href)}">${tr('card.enter')} ›</a>`}</div></article>`}).join(''):`<div class="empty-state"><p>${tr('empty.title')}</p><button class="button" id="clear-search">${tr('empty.clear')}</button></div>`;if(lang==='en'){grid.querySelectorAll('.status-badge.maintenance').forEach(n=>n.textContent=tr('card.maintenance'));grid.querySelectorAll('.button.disabled').forEach(n=>n.textContent=tr('card.unavailable'))}document.querySelector('#clear-search')?.addEventListener('click',()=>{state.keyword='';searchInput.value='';render()})}searchInput.addEventListener('input',e=>{state.keyword=e.target.value;render()});document.addEventListener('toolkit:languagechange',render);ToolkitI18n.translatePage();render();
