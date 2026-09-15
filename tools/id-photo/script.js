@@ -19,9 +19,12 @@ let background = '#ffffff'
 let subjectCanvas = null
 let segmenter = null
 let segmenterPromise = null
+let statusKey = 'id.private'
 
-ToolkitI18n.registerTranslations({ 'zh-CN': { 'id.settings':'证件照设置','id.upload':'点击选择 JPG、PNG 或 WebP 照片（最大 10MB）','id.size':'照片尺寸','id.zoom':'人物缩放','id.background':'背景颜色','id.cutout':'智能抠图','id.clear':'清空','id.private':'照片只在当前页面内存中处理','id.preview':'预览与构图','id.download':'下载证件照' }, en: { 'id.settings':'ID photo settings','id.upload':'Choose a JPG, PNG or WebP photo (10 MB max)','id.size':'Photo size','id.zoom':'Subject zoom','id.background':'Background','id.cutout':'Smart cutout','id.clear':'Clear','id.private':'Your photo is processed only in this page memory','id.preview':'Preview & composition','id.download':'Download ID photo' } })
+ToolkitI18n.registerTranslations({ 'zh-CN': { 'id.stepUpload':'1. 上传照片','id.stepCrop':'2. 尺寸裁剪','id.stepCutout':'3. 智能抠图','id.stepExport':'4. 换底导出','id.settings':'证件照设置','id.upload':'点击选择 JPG、PNG 或 WebP 照片（最大 10MB）','id.size':'照片尺寸','id.zoom':'人物缩放','id.background':'背景颜色','id.cutout':'智能抠图','id.clear':'清空','id.private':'照片只在当前页面内存中处理','id.preview':'预览与构图','id.download':'下载证件照','id.tooLarge':'图片不能超过 10MB','id.chooseFirst':'请先选择照片','id.loading':'正在加载本地人像模型…','id.complete':'抠图完成，可选择背景并下载。','id.unavailable':'智能抠图暂不可用，仍可导出原背景照片。' }, en: { 'id.stepUpload':'1. Upload photo','id.stepCrop':'2. Size & crop','id.stepCutout':'3. Smart cutout','id.stepExport':'4. Background & export','id.settings':'ID photo settings','id.upload':'Choose a JPG, PNG or WebP photo (10 MB max)','id.size':'Photo size','id.zoom':'Subject zoom','id.background':'Background','id.cutout':'Smart cutout','id.clear':'Clear','id.private':'Your photo is processed only in this page memory','id.preview':'Preview & composition','id.download':'Download ID photo','id.tooLarge':'The image must be 10 MB or smaller','id.chooseFirst':'Choose a photo first','id.loading':'Loading the local portrait model…','id.complete':'Cutout complete. Choose a background and download.','id.unavailable':'Cutout is unavailable. You can still export the original background.' } })
 ToolkitI18n.translatePage()
+
+function setStatus(key){statusKey=key;status.textContent=ToolkitI18n.translate(key)}
 
 function renderProgress(){const current=stepForPhase(state.phase);steps.forEach((step,index)=>{step.classList.toggle('active',index===current);step.classList.toggle('done',index<current);if(index===current)step.setAttribute('aria-current','step');else step.removeAttribute('aria-current')})}
 
@@ -45,28 +48,28 @@ async function loadSegmenter(){
   return segmenterPromise
 }
 
-file.onchange=()=>{const f=file.files[0];if(!f)return;if(f.size>10*1024*1024){status.textContent='图片不能超过 10MB';return}if(objectUrl)URL.revokeObjectURL(objectUrl);objectUrl=URL.createObjectURL(f);image=new Image();image.onload=()=>{state.setImage(f);download.disabled=false;invalidateMask()};image.onerror=clear;image.src=objectUrl}
+file.onchange=()=>{const f=file.files[0];if(!f)return;if(f.size>10*1024*1024){setStatus('id.tooLarge');return}if(objectUrl)URL.revokeObjectURL(objectUrl);objectUrl=URL.createObjectURL(f);image=new Image();image.onload=()=>{state.setImage(f);download.disabled=false;invalidateMask();setStatus('id.private')};image.onerror=clear;image.src=objectUrl}
 size.onchange=invalidateMask
 zoom.oninput=invalidateMask
 renderSizes()
-document.addEventListener('toolkit:languagechange',renderSizes)
+document.addEventListener('toolkit:languagechange',()=>{renderSizes();setStatus(statusKey)})
 
 for(const color of['#ffffff','#438edb','#d92d20','#000000']){const button=document.createElement('button');button.type='button';button.className='color'+(color===background?' active':'');button.style.background=color;button.ariaLabel=color;button.onclick=()=>{background=color;document.querySelectorAll('.color').forEach(x=>x.classList.remove('active'));button.classList.add('active');draw()};document.querySelector('#colors').append(button)}
 
-function clear(){if(objectUrl)URL.revokeObjectURL(objectUrl);objectUrl='';image=null;file.value='';if(subjectCanvas){subjectCanvas.width=subjectCanvas.height=0;subjectCanvas=null}state.clear();download.disabled=true;ctx.clearRect(0,0,canvas.width,canvas.height);status.textContent=ToolkitI18n.translate('id.private');renderProgress()}
+function clear(){if(objectUrl)URL.revokeObjectURL(objectUrl);objectUrl='';image=null;file.value='';if(subjectCanvas){subjectCanvas.width=subjectCanvas.height=0;subjectCanvas=null}state.clear();download.disabled=true;ctx.clearRect(0,0,canvas.width,canvas.height);setStatus('id.private');renderProgress()}
 document.querySelector('#clear').onclick=clear
 
 cutout.onclick=async()=>{
-  if(!state.requestCutout()){status.textContent=ToolkitI18n.getLanguage()==='en'?'Choose a photo first':'请先选择照片';return}
+  if(!state.requestCutout()){setStatus('id.chooseFirst');return}
   renderProgress()
-  status.textContent=ToolkitI18n.getLanguage()==='en'?'Loading local portrait model…':'正在加载本地人像模型…'
+  setStatus('id.loading')
   cutout.disabled=true
   try{
     const engine=await loadSegmenter()
     const source=document.createElement('canvas');drawSource(source)
     await new Promise(async(resolve,reject)=>{engine.onResults(results=>{try{const nextSubject=document.createElement('canvas');nextSubject.width=source.width;nextSubject.height=source.height;const subjectContext=nextSubject.getContext('2d',{willReadFrequently:true});subjectContext.clearRect(0,0,nextSubject.width,nextSubject.height);subjectContext.drawImage(results.segmentationMask,0,0,nextSubject.width,nextSubject.height);const maskPixels=subjectContext.getImageData(0,0,nextSubject.width,nextSubject.height);const alpha=new Uint8ClampedArray(nextSubject.width*nextSubject.height);for(let pixel=0;pixel<alpha.length;pixel++)alpha[pixel]=maskPixels.data[pixel*4+3];const refinedAlpha=refineAlphaMask(alpha,nextSubject.width,nextSubject.height);let transparentPixels=0;for(let pixel=0;pixel<refinedAlpha.length;pixel++){maskPixels.data[pixel*4]=255;maskPixels.data[pixel*4+1]=255;maskPixels.data[pixel*4+2]=255;maskPixels.data[pixel*4+3]=refinedAlpha[pixel];if(refinedAlpha[pixel]<245)transparentPixels++}if(transparentPixels<refinedAlpha.length*.005)throw new Error('INVALID_MASK');subjectContext.putImageData(maskPixels,0,0);subjectContext.globalCompositeOperation='source-in';subjectContext.drawImage(source,0,0);subjectContext.globalCompositeOperation='source-over';subjectCanvas=nextSubject;resolve()}catch(error){reject(error)}});try{await engine.send({image:source})}catch(error){reject(error)}})
-    state.completeCutout();draw();renderProgress();status.textContent=ToolkitI18n.getLanguage()==='en'?'Cutout complete. Choose a background and download.':'抠图完成，可选择背景并下载。'
-  }catch(error){state.failCutout();renderProgress();segmenterPromise=null;status.textContent=ToolkitI18n.getLanguage()==='en'?'Cutout unavailable. You can still export the original background.':'智能抠图暂不可用，仍可导出原背景照片。'}finally{cutout.disabled=false}
+    state.completeCutout();draw();renderProgress();setStatus('id.complete')
+  }catch(error){state.failCutout();renderProgress();segmenterPromise=null;setStatus('id.unavailable')}finally{cutout.disabled=false}
 }
 
 download.onclick=()=>canvas.toBlob(blob=>{const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='id-photo.png';a.click();setTimeout(()=>URL.revokeObjectURL(url),0)},'image/png')

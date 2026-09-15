@@ -276,7 +276,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1><i class="fas fa-qrcode"></i> 二维码生成器</h1>
+            <h1 data-i18n="qr.title"><i class="fas fa-qrcode"></i> 二维码生成器</h1>
             <p>免费在线生成各种类型的二维码，支持文字、链接、WiFi、联系人等</p>
         </div>
 
@@ -558,7 +558,7 @@
             }
             
             if (!content.trim()) {
-                alert('请填写内容后再生成二维码！');
+                alert(window.QrI18n ? QrI18n.t('qr.empty') : '请填写内容后再生成二维码！');
 		return;
 	}
 	
@@ -622,5 +622,6 @@
             });
 	});
 </script>
+<script src="i18n.js"></script>
 </body>
 </html>

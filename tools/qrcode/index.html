@@ -9,9 +9,15 @@
 <body>
   <header data-site-header><a class="back" href="../../index.html">&lt; 返回首页</a><button data-language-toggle>中 / EN</button></header>
   <div class="iframe-wrap">
-    <iframe class="iframe" src="../../free-tools-collection/qrcodejs/index.html"></iframe>
+    <iframe id="qrFrame" class="iframe" src="../../free-tools-collection/qrcodejs/index.html" title="QR Code Generator"></iframe>
   </div>
-  <script src="../../assets/js/i18n.js"></script><script>window.ToolkitPage={root:'../../',tool:true,title:'二维码生成器 / QR Code Generator'};</script><script src="../../assets/js/site-shell.js"></script>
+  <script src="../../assets/js/i18n.js"></script><script>window.ToolkitPage={root:'../../',tool:true,titleZh:'二维码生成器',titleEn:'QR Code Generator'};</script><script src="../../assets/js/site-shell.js"></script>
+  <script>
+    const qrFrame=document.querySelector('#qrFrame');
+    function sendQrLanguage(){qrFrame.contentWindow?.postMessage({type:'toolkit-language',language:ToolkitI18n.getLanguage()},location.origin)}
+    qrFrame.addEventListener('load',sendQrLanguage);
+    document.addEventListener('toolkit:languagechange',sendQrLanguage);
+  </script>
 </body>
 </html>
 

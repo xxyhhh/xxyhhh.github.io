@@ -52,3 +52,31 @@ test('time and cron format dates using the selected UI locale', async () => {
     assert.match(await page(name), /ToolkitI18n\.getLanguage\(\).*en-US.*zh-CN/s)
   }
 })
+
+test('cropper translates controls and live preview dimensions without resetting the crop', async () => {
+  const html = await page('cropper')
+  assert.match(html, /registerTranslations/)
+  assert.match(html, /cropper\.previewDimensions/)
+  assert.match(html, /toolkit:languagechange/)
+  assert.doesNotMatch(html, /toolkit:languagechange[^\n]+(?:reset|destroy)/)
+})
+
+test('ID photo translates workflow and preserves dynamic status on language change', async () => {
+  const html = await page('id-photo')
+  const script = await readFile(new URL('../tools/id-photo/script.js', import.meta.url), 'utf8')
+  assert.ok((html.match(/data-i18n="id\.step/g) || []).length === 4)
+  assert.match(script, /setStatus/)
+  assert.match(script, /statusKey/)
+  assert.match(script, /toolkit:languagechange/)
+})
+
+test('QR wrapper forwards language changes and embedded generator translates itself', async () => {
+  const wrapper = await page('qrcode')
+  const embedded = await readFile(new URL('../free-tools-collection/qrcodejs/index.html', import.meta.url), 'utf8')
+  const embeddedI18n = await readFile(new URL('../free-tools-collection/qrcodejs/i18n.js', import.meta.url), 'utf8')
+  assert.match(wrapper, /postMessage/)
+  assert.match(wrapper, /toolkit:languagechange/)
+  assert.match(embeddedI18n, /toolkit-language/)
+  assert.match(embedded, /data-i18n/)
+  assert.match(embedded + embeddedI18n, /qr\.empty/)
+})

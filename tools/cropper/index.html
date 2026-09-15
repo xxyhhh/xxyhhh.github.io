@@ -26,17 +26,17 @@
   </header>
   <div class="panel">
     <input id="file" type="file" accept="image/*" />
-    <button class="button" id="rotateL">左转90°</button>
-    <button class="button" id="rotateR">右转90°</button>
-    <button class="button" id="flipH">水平翻转</button>
-    <button class="button" id="reset">重置</button>
-    <button class="button primary" id="export">导出PNG</button>
+    <button class="button" id="rotateL" data-i18n="cropper.rotateL">左转90°</button>
+    <button class="button" id="rotateR" data-i18n="cropper.rotateR">右转90°</button>
+    <button class="button" id="flipH" data-i18n="cropper.flipH">水平翻转</button>
+    <button class="button" id="reset" data-i18n="cropper.reset">重置</button>
+    <button class="button primary" id="export" data-i18n="cropper.export">导出PNG</button>
   </div>
   <div class="work">
     <div class="left"><img id="img" style="max-width:100%; display:none;" /></div>
     <div class="right">
       <div class="preview"><canvas id="previewCanvas" width="0" height="0"></canvas></div>
-      <div class="preview-info" id="previewInfo">框选后显示实际裁剪尺寸（小图不会放大）</div>
+      <div class="preview-info" id="previewInfo" data-i18n="cropper.previewEmpty">框选后显示实际裁剪尺寸（小图不会放大）</div>
       <div class="actions"></div>
     </div>
   </div>
@@ -52,6 +52,15 @@
     let cropper;
     let previewFrame = 0;
     let currentObjectUrl = '';
+    let previewDimensions = null;
+
+    function renderPreviewInfo() {
+      if (!previewDimensions || !window.ToolkitI18n) return;
+      const template = ToolkitI18n.translate('cropper.previewDimensions');
+      previewInfo.textContent = template
+        .replace('{width}', previewDimensions.width)
+        .replace('{height}', previewDimensions.height);
+    }
 
     function fitPreview() {
       if (!previewCanvas.width || !previewCanvas.height) return;
@@ -71,7 +80,8 @@
         previewCanvas.width = result.width;
         previewCanvas.height = result.height;
         previewContext.drawImage(result, 0, 0);
-        previewInfo.textContent = `${result.width} × ${result.height} px · 1:1 预览（大图自动缩小）`;
+        previewDimensions = { width: result.width, height: result.height };
+        renderPreviewInfo();
         fitPreview();
       });
     }
@@ -109,8 +119,26 @@
       if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
     });
     window.addEventListener('resize', fitPreview);
+    document.addEventListener('toolkit:languagechange', renderPreviewInfo);
   </script>
-  <script src="../../assets/js/i18n.js"></script><script>window.ToolkitPage={root:'../../',tool:true,title:'图片裁剪 / Image Cropper'};</script><script src="../../assets/js/site-shell.js"></script>
+  <script src="../../assets/js/i18n.js"></script>
+  <script>
+    ToolkitI18n.registerTranslations({
+      'zh-CN': {
+        'cropper.rotateL':'左转90°','cropper.rotateR':'右转90°','cropper.flipH':'水平翻转',
+        'cropper.reset':'重置','cropper.export':'导出PNG',
+        'cropper.previewEmpty':'框选后显示实际裁剪尺寸（小图不会放大）',
+        'cropper.previewDimensions':'{width} × {height} px · 1:1 预览（大图自动缩小）'
+      },
+      en: {
+        'cropper.rotateL':'Rotate left 90°','cropper.rotateR':'Rotate right 90°','cropper.flipH':'Flip horizontally',
+        'cropper.reset':'Reset','cropper.export':'Export PNG',
+        'cropper.previewEmpty':'Select an area to see its actual size (small crops are not enlarged)',
+        'cropper.previewDimensions':'{width} × {height} px · 1:1 preview (large crops scale down)'
+      }
+    });
+    window.ToolkitPage={root:'../../',tool:true,titleZh:'图片裁剪',titleEn:'Image Cropper'};
+  </script><script src="../../assets/js/site-shell.js"></script>
 </body>
 </html>
 
