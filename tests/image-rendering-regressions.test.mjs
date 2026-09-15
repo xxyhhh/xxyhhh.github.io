@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises'
 
 const cropper = await readFile(new URL('../tools/cropper/index.html', import.meta.url), 'utf8')
 const idPhoto = await readFile(new URL('../tools/id-photo/script.js', import.meta.url), 'utf8')
+const idPhotoStyles = await readFile(new URL('../tools/id-photo/styles.css', import.meta.url), 'utf8')
 
 test('cropper preview preserves CropperJS calculated image geometry', () => {
   assert.match(cropper, /<canvas id="previewCanvas"/)
@@ -23,4 +24,10 @@ test('ID photo creates and validates a transparent subject layer in the model ca
 test('ID photo module URL is versioned to bypass stale GitHub Pages cache', async () => {
   const html = await readFile(new URL('../tools/id-photo/index.html', import.meta.url), 'utf8')
   assert.match(html, /src="\.\/script\.js\?v=[^"]+"/)
+})
+
+test('ID photo renders active and completed workflow steps from state', () => {
+  assert.match(idPhoto, /renderProgress/)
+  assert.match(idPhoto, /classList\.toggle\('done'/)
+  assert.match(idPhotoStyles, /\.step\.done/)
 })

@@ -1,14 +1,14 @@
 ---
 project: 在线工具集视觉重设计与证件照工具
 workflow_version: 1
-current_stage: 8
-stage_status: awaiting_confirmation
+current_stage: 9
+stage_status: confirmed
 active_agent: Codex
-last_confirmed_stage: 7
+last_confirmed_stage: 9
 prototype_mode: stitch
 prototype_version: stitch-v1
 prd_version: v1
-updated_at: 2026-09-15T09:10:00+08:00
+updated_at: 2026-09-15T12:00:00+08:00
 ---
 
 # 工作流状态
@@ -21,14 +21,16 @@ updated_at: 2026-09-15T09:10:00+08:00
 - 阶段 4：PRD v1 已由用户确认，见 [04-prd-v1.md](./04-prd-v1.md)。
 - 阶段 5：技术架构已由用户确认，见 [05-technical-architecture.md](./05-technical-architecture.md)。
 - 阶段 6：开发计划已由用户确认，选择当前任务内联执行。
+- 阶段 8：开发计划与开发授权已确认并执行。
+- 阶段 9：实现与线上验收已确认，正式产物见 [09-acceptance-report.md](./09-acceptance-report.md)。
 
 ## 当前工作
 
-阶段 8：线上验收版已实现，等待用户验收反馈。
+阶段 9/9 已完成。本轮全站重设计与证件照工具工作流关闭。
 
 ## 下一步允许动作
 
-推送 `gh-pages` 后由用户在线验收视觉与主要路径；根据反馈修正后关闭工作流。
+如需继续增强，创建下一轮迭代并从范围确认开始；优先候选为历史工具正文完整英文化与证件照高级编辑。
 
 ## 阻断项
 
@@ -36,9 +38,8 @@ updated_at: 2026-09-15T09:10:00+08:00
 
 ## 非阻断未决问题
 
-- 证件照首期需要支持的尺寸预设。
-- 全站目标视觉方向与现有深色主题的取舍。
-- 人像分割在低性能设备上的降级体验。
+- 历史工具正文完整英文化。
+- 证件照自定义尺寸、拖动定位、旋转、JPG 质量和手动蒙版修整。
 
 ## 已确认关键决策
 
@@ -60,4 +61,4 @@ updated_at: 2026-09-15T09:10:00+08:00
 
 ## 最近验证
 
-未进入实现阶段。
+2026-09-15：`node --test tests` 共 45 项通过、0 项失败；`git diff --check` 通过；用户确认线上抠图效果并同意进入下一阶段。
