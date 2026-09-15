@@ -12,7 +12,9 @@
     .work { display:flex; gap:12px; padding:12px; height: calc(100vh - 112px); }
     .left { flex: 2; background:var(--surface-lowest); border:1px solid var(--border); border-radius: 12px; overflow:hidden; display:flex; align-items:center; justify-content:center; }
     .right { flex: 1; display:flex; flex-direction:column; gap:12px; }
-    .preview { flex:1; min-height:0; background:var(--surface-lowest); border:1px solid var(--border); border-radius:12px; overflow:hidden; display:block; }
+    .preview { flex:1; min-height:0; padding:12px; background:var(--surface-lowest); border:1px solid var(--border); border-radius:12px; overflow:hidden; display:grid; place-items:center; }
+    .preview canvas { display:block; max-width:none; max-height:none; }
+    .preview-info { color:var(--muted); font:12px var(--mono); text-align:center; }
     .actions { display:flex; gap:8px; flex-wrap: wrap; }
   </style>
 </head>
@@ -33,7 +35,8 @@
   <div class="work">
     <div class="left"><img id="img" style="max-width:100%; display:none;" /></div>
     <div class="right">
-      <div class="preview"><img id="thumb" /></div>
+      <div class="preview"><canvas id="previewCanvas" width="0" height="0"></canvas></div>
+      <div class="preview-info" id="previewInfo">框选后显示实际裁剪尺寸（小图不会放大）</div>
       <div class="actions"></div>
     </div>
   </div>
@@ -42,9 +45,36 @@
   <script>
     const img = document.getElementById('img');
     const file = document.getElementById('file');
-    const thumb = document.getElementById('thumb');
+    const preview = document.querySelector('.preview');
+    const previewCanvas = document.getElementById('previewCanvas');
+    const previewInfo = document.getElementById('previewInfo');
+    const previewContext = previewCanvas.getContext('2d');
     let cropper;
+    let previewFrame = 0;
     let currentObjectUrl = '';
+
+    function fitPreview() {
+      if (!previewCanvas.width || !previewCanvas.height) return;
+      const maxWidth = Math.max(1, preview.clientWidth - 24);
+      const maxHeight = Math.max(1, preview.clientHeight - 24);
+      const scale = Math.min(1, maxWidth / previewCanvas.width, maxHeight / previewCanvas.height);
+      previewCanvas.style.width = Math.round(previewCanvas.width * scale) + 'px';
+      previewCanvas.style.height = Math.round(previewCanvas.height * scale) + 'px';
+    }
+
+    function renderPreview() {
+      cancelAnimationFrame(previewFrame);
+      previewFrame = requestAnimationFrame(() => {
+        if (!cropper) return;
+        const result = cropper.getCroppedCanvas({ imageSmoothingEnabled:true, imageSmoothingQuality:'high' });
+        if (!result) return;
+        previewCanvas.width = result.width;
+        previewCanvas.height = result.height;
+        previewContext.drawImage(result, 0, 0);
+        previewInfo.textContent = `${result.width} × ${result.height} px · 1:1 预览（大图自动缩小）`;
+        fitPreview();
+      });
+    }
 
     file.addEventListener('change', e => {
       const f = e.target.files[0];
@@ -54,7 +84,7 @@
       currentObjectUrl = url;
       img.src = url; img.style.display='block';
       if (cropper) cropper.destroy();
-      cropper = new Cropper(img, { viewMode:1, preview: thumb.parentElement, autoCropArea: 0.9, background:false });
+      cropper = new Cropper(img, { viewMode:1, autoCropArea:0.9, background:false, ready:renderPreview, crop:renderPreview });
     });
 
     document.getElementById('rotateL').onclick = () => cropper?.rotate(-90);
@@ -74,9 +104,11 @@
       }, 'image/png');
     };
     window.addEventListener('beforeunload', () => {
+      cancelAnimationFrame(previewFrame);
       cropper?.destroy();
       if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
     });
+    window.addEventListener('resize', fitPreview);
   </script>
   <script src="../../assets/js/i18n.js"></script><script>window.ToolkitPage={root:'../../',tool:true,title:'图片裁剪 / Image Cropper'};</script><script src="../../assets/js/site-shell.js"></script>
 </body>

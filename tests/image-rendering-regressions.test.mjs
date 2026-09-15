@@ -6,16 +6,20 @@ const cropper = await readFile(new URL('../tools/cropper/index.html', import.met
 const idPhoto = await readFile(new URL('../tools/id-photo/script.js', import.meta.url), 'utf8')
 
 test('cropper preview preserves CropperJS calculated image geometry', () => {
-  assert.match(cropper, /\.preview\s*\{[^}]*overflow\s*:\s*hidden[^}]*display\s*:\s*block/s)
-  assert.doesNotMatch(cropper, /\.preview\s+img\s*\{[^}]*max-width/s)
+  assert.match(cropper, /<canvas id="previewCanvas"/)
+  assert.doesNotMatch(cropper, /preview:\s*thumb\.parentElement/)
+  assert.match(cropper, /getCroppedCanvas\(\{[^}]*imageSmoothingEnabled:\s*true/s)
+  assert.match(cropper, /Math\.min\(1,\s*maxWidth\s*\/\s*previewCanvas\.width/)
 })
 
-test('ID photo applies the portrait mask before painting the background', () => {
-  const drawBody = idPhoto.match(/function draw\(\)\{([\s\S]*?)\}\nfunction invalidateMask/)?.[1] ?? ''
-  const maskIndex = drawBody.indexOf('ctx.drawImage(maskCanvas')
-  const backgroundIndex = drawBody.indexOf("ctx.fillStyle=background")
+test('ID photo creates and validates a transparent subject layer in the model callback', () => {
+  assert.match(idPhoto, /results\.segmentationMask[\s\S]*source-in[\s\S]*drawImage\(source/)
+  assert.match(idPhoto, /getImageData/)
+  assert.match(idPhoto, /transparentPixels/)
+  assert.match(idPhoto, /INVALID_MASK/)
+})
 
-  assert.ok(maskIndex >= 0, 'draw() must paint the segmentation mask')
-  assert.ok(backgroundIndex > maskIndex, 'background must be painted after the masked subject')
-  assert.match(drawBody, /source-in[\s\S]*destination-over/)
+test('ID photo module URL is versioned to bypass stale GitHub Pages cache', async () => {
+  const html = await readFile(new URL('../tools/id-photo/index.html', import.meta.url), 'utf8')
+  assert.match(html, /src="\.\/script\.js\?v=[^"]+"/)
 })

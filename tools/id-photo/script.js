@@ -13,7 +13,7 @@ const cutout = document.querySelector('#cutout')
 let image = null
 let objectUrl = ''
 let background = '#ffffff'
-let maskCanvas = null
+let subjectCanvas = null
 let segmenter = null
 let segmenterPromise = null
 
@@ -23,8 +23,8 @@ ToolkitI18n.translatePage()
 function renderSizes(){const en=ToolkitI18n.getLanguage()==='en';size.innerHTML=PHOTO_SIZES.map(s=>`<option value="${s.id}">${en?s.en:s.zh} · ${s.width}×${s.height}px</option>`).join('')}
 function selected(){return PHOTO_SIZES.find(s=>s.id===size.value)||PHOTO_SIZES[0]}
 function drawSource(target=canvas){const c=target.getContext('2d'),s=selected();target.width=s.width;target.height=s.height;c.clearRect(0,0,s.width,s.height);if(!image)return;const z=Number(zoom.value),scale=Math.max(s.width/image.naturalWidth,s.height/image.naturalHeight)*z,w=image.naturalWidth*scale,h=image.naturalHeight*scale;c.drawImage(image,(s.width-w)/2,(s.height-h)/2,w,h)}
-function draw(){const source=document.createElement('canvas');drawSource(source);canvas.width=source.width;canvas.height=source.height;ctx.clearRect(0,0,canvas.width,canvas.height);if(!image)return;if(maskCanvas){ctx.drawImage(maskCanvas,0,0,canvas.width,canvas.height);ctx.globalCompositeOperation='source-in';ctx.drawImage(source,0,0);ctx.globalCompositeOperation='destination-over';ctx.fillStyle=background;ctx.fillRect(0,0,canvas.width,canvas.height);ctx.globalCompositeOperation='source-over'}else ctx.drawImage(source,0,0)}
-function invalidateMask(){if(maskCanvas){maskCanvas.width=maskCanvas.height=0;maskCanvas=null;state.phase='ready'}draw()}
+function draw(){const source=document.createElement('canvas');drawSource(source);canvas.width=source.width;canvas.height=source.height;ctx.clearRect(0,0,canvas.width,canvas.height);if(!image)return;if(subjectCanvas){ctx.fillStyle=background;ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(subjectCanvas,0,0,canvas.width,canvas.height)}else ctx.drawImage(source,0,0)}
+function invalidateMask(){if(subjectCanvas){subjectCanvas.width=subjectCanvas.height=0;subjectCanvas=null;state.phase='ready'}draw()}
 
 async function loadSegmenter(){
   if(segmenter)return segmenter
@@ -48,7 +48,7 @@ document.addEventListener('toolkit:languagechange',renderSizes)
 
 for(const color of['#ffffff','#438edb','#d92d20','#000000']){const button=document.createElement('button');button.type='button';button.className='color'+(color===background?' active':'');button.style.background=color;button.ariaLabel=color;button.onclick=()=>{background=color;document.querySelectorAll('.color').forEach(x=>x.classList.remove('active'));button.classList.add('active');draw()};document.querySelector('#colors').append(button)}
 
-function clear(){if(objectUrl)URL.revokeObjectURL(objectUrl);objectUrl='';image=null;file.value='';if(maskCanvas){maskCanvas.width=maskCanvas.height=0;maskCanvas=null}state.clear();download.disabled=true;ctx.clearRect(0,0,canvas.width,canvas.height);status.textContent=ToolkitI18n.translate('id.private')}
+function clear(){if(objectUrl)URL.revokeObjectURL(objectUrl);objectUrl='';image=null;file.value='';if(subjectCanvas){subjectCanvas.width=subjectCanvas.height=0;subjectCanvas=null}state.clear();download.disabled=true;ctx.clearRect(0,0,canvas.width,canvas.height);status.textContent=ToolkitI18n.translate('id.private')}
 document.querySelector('#clear').onclick=clear
 
 cutout.onclick=async()=>{
@@ -58,7 +58,7 @@ cutout.onclick=async()=>{
   try{
     const engine=await loadSegmenter()
     const source=document.createElement('canvas');drawSource(source)
-    await new Promise(async(resolve,reject)=>{engine.onResults(results=>{try{maskCanvas=document.createElement('canvas');maskCanvas.width=source.width;maskCanvas.height=source.height;maskCanvas.getContext('2d').drawImage(results.segmentationMask,0,0,source.width,source.height);resolve()}catch(error){reject(error)}});try{await engine.send({image:source})}catch(error){reject(error)}})
+    await new Promise(async(resolve,reject)=>{engine.onResults(results=>{try{const nextSubject=document.createElement('canvas');nextSubject.width=source.width;nextSubject.height=source.height;const subjectContext=nextSubject.getContext('2d',{willReadFrequently:true});subjectContext.clearRect(0,0,nextSubject.width,nextSubject.height);subjectContext.drawImage(results.segmentationMask,0,0,nextSubject.width,nextSubject.height);subjectContext.globalCompositeOperation='source-in';subjectContext.drawImage(source,0,0);subjectContext.globalCompositeOperation='source-over';const pixels=subjectContext.getImageData(0,0,nextSubject.width,nextSubject.height).data;let transparentPixels=0;for(let i=3;i<pixels.length;i+=4)if(pixels[i]<245)transparentPixels++;if(transparentPixels<pixels.length/4*.005)throw new Error('INVALID_MASK');subjectCanvas=nextSubject;resolve()}catch(error){reject(error)}});try{await engine.send({image:source})}catch(error){reject(error)}})
     state.completeCutout();draw();status.textContent=ToolkitI18n.getLanguage()==='en'?'Cutout complete. Choose a background and download.':'抠图完成，可选择背景并下载。'
   }catch(error){state.failCutout();segmenterPromise=null;status.textContent=ToolkitI18n.getLanguage()==='en'?'Cutout unavailable. You can still export the original background.':'智能抠图暂不可用，仍可导出原背景照片。'}finally{cutout.disabled=false}
 }
