@@ -91,3 +91,10 @@ test('image tools wrapper forwards language without clearing the current image',
   assert.match(embeddedScript, /ImageToolsI18n\.t/)
   assert.doesNotMatch(wrapper, /toolkit:languagechange[^\n]+(?:reload|src\s*=)/)
 })
+
+test('maintenance page is fully bilingual', async () => {
+  const html = await page('m3u8player')
+  assert.match(html, /registerTranslations/)
+  assert.match(html, /data-i18n="m3u8\.title"/)
+  assert.match(html, /data-i18n="m3u8\.description"/)
+})

@@ -15,9 +15,16 @@
     ['外观设置','Appearance'],['前景色：','Foreground:'],['背景色：','Background:'],
     ['默认黑白配色已是最佳扫描效果，如需个性化可调整颜色。','Black on white scans best; adjust colors only when needed.'],
     ['生成二维码','Generate QR code'],['清空','Clear'],['生成的二维码','Generated QR code'],['下载二维码','Download QR code'],
-    ['使用说明','How to use'],['手机支持说明','Mobile compatibility'],['使用示例','Examples'],
+    ['使用说明','How to use'],['📱 手机支持说明','📱 Mobile compatibility'],['使用示例','Examples'],
     ['不同手机扫码软件的功能可能略有差异','Features vary between camera and scanner apps'],['WiFi二维码需要手机支持WiFi扫码功能','Wi-Fi QR codes require Wi-Fi scanning support'],['联系人二维码需要手机支持vCard格式','Contact QR codes require vCard support'],['建议使用256x256或更大尺寸以获得更好的扫描效果','Use 256 × 256 or larger for more reliable scanning'],
-    ['网址链接（推荐）：','Website (recommended):'],['WiFi连接：','Wi-Fi:'],['网络名称：MyWiFi，密码：12345678','Network: MyWiFi, password: 12345678'],['姓名：张三，电话：13800138000','Name: Alex Zhang, phone: 13800138000'],['收件人：example@email.com，主题：问候','To: example@email.com, subject: Hello']
+    ['网址链接（推荐）：','Website (recommended):'],['WiFi连接：','Wi-Fi:'],['网络名称：MyWiFi，密码：12345678','Network: MyWiFi, password: 12345678'],['姓名：张三，电话：13800138000','Name: Alex Zhang, phone: 13800138000'],['收件人：example@email.com，主题：问候','To: example@email.com, subject: Hello'],
+    ['：输入任意文字或网址，生成的二维码扫描后可直接查看内容或访问链接',': Enter text or a URL to create a scannable code.'],
+    ['：填写WiFi信息，扫描后可直接连接WiFi网络',': Enter network details so supported devices can connect after scanning.'],
+    ['：填写联系人信息，扫描后可直接保存到手机通讯录',': Create a vCard that supported devices can save.'],
+    ['：填写邮件信息，扫描后可直接打开邮件应用并填写收件人、主题和内容',': Open an email app with recipient, subject and message filled in.'],
+    ['：填写短信信息，扫描后可直接打开短信应用并填写收件人和内容',': Open a messaging app with the phone number and message filled in.'],
+    ['：默认黑白配色已是最佳扫描效果，彩色二维码可能影响识别率',': Black on white scans best; colored codes may reduce reliability.'],
+    ['：中等级别(15%)适合大多数场景，高级别适合打印或可能损坏的二维码',': Medium (15%) suits most cases; higher levels are useful for print or possible damage.']
   ];
   const placeholders = [
     ['请输入要生成二维码的文字内容或网址链接...','Enter text or a URL...'],['请输入WiFi名称','Enter the Wi-Fi name'],['请输入WiFi密码','Enter the Wi-Fi password'],

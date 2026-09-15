@@ -12,8 +12,14 @@
     <div class="tool-title">M3U8/HLS 播放器</div>
     <div class="tool-bar"><button type="button" data-language-toggle>中 / EN</button></div>
   </header>
-  <main class="page-main"><div class="container"><section class="hero"><p class="eyebrow">MAINTENANCE</p><h1>M3U8 / HLS 播放器维护中</h1><p>腾讯云 TCPlayer License 已过期，目前不提供播放入口。重新取得有效许可并完成兼容测试后再恢复。</p></section></div></main>
-  <script src="../../assets/js/i18n.js"></script><script>window.ToolkitPage={root:'../../',tool:true,title:'M3U8 / HLS · 维护中 / Maintenance'};</script><script src="../../assets/js/site-shell.js"></script>
+  <main class="page-main"><div class="container"><section class="hero"><p class="eyebrow">MAINTENANCE</p><h1 data-i18n="m3u8.title">M3U8 / HLS 播放器维护中</h1><p data-i18n="m3u8.description">腾讯云 TCPlayer License 已过期，目前不提供播放入口。重新取得有效许可并完成兼容测试后再恢复。</p></section></div></main>
+  <script src="../../assets/js/i18n.js"></script><script>
+    ToolkitI18n.registerTranslations({
+      'zh-CN':{'m3u8.title':'M3U8 / HLS 播放器维护中','m3u8.description':'腾讯云 TCPlayer License 已过期，目前不提供播放入口。重新取得有效许可并完成兼容测试后再恢复。'},
+      en:{'m3u8.title':'M3U8 / HLS player under maintenance','m3u8.description':'The Tencent Cloud TCPlayer license has expired, so playback is currently unavailable. Access will return after a valid license is obtained and compatibility testing is complete.'}
+    });
+    window.ToolkitPage={root:'../../',tool:true,titleZh:'M3U8 / HLS · 维护中',titleEn:'M3U8 / HLS · Maintenance'};
+  </script><script src="../../assets/js/site-shell.js"></script>
 </body>
 </html>
 
