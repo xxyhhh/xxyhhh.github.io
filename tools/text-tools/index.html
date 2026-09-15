@@ -20,10 +20,10 @@
   </style>
 </head>
 <body>
-  <header class="tool-header">
+  <header class="tool-header" data-site-header>
     <a class="back" href="../../index.html">&lt; 返回首页</a>
     <div class="tool-title">文本整理工具</div>
-    <div class="tool-bar"></div>
+    <div class="tool-bar"><button type="button" data-language-toggle>中 / EN</button></div>
   </header>
 
   <div class="toolbar">
@@ -79,6 +79,7 @@
     $('copy').onclick = async ()=> { try{ await navigator.clipboard.writeText(txt.value); const t = $('copy').textContent; $('copy').textContent='已复制'; setTimeout(()=>$('copy').textContent=t,900);}catch(e){} };
     $('clear').onclick = ()=> txt.value='';
   </script>
+  <script src="../../assets/js/i18n.js"></script><script>window.ToolkitPage={root:'../../',tool:true,title:'文本整理工具 / Text Utilities'};</script><script src="../../assets/js/site-shell.js"></script>
 </body>
 </html>
 
