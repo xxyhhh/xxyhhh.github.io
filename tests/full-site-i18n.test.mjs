@@ -37,3 +37,18 @@ test('regex cheat sheet translates its formatted descriptions', async () => {
   const html = await page('regex')
   assert.ok((html.match(/data-i18n-html="regex\.cheat/g) || []).length >= 6)
 })
+
+for (const name of ['time-converter', 'idgen', 'cron', 'jwt']) {
+  test(`${name} translates controls and runtime status`, async () => {
+    const html = await page(name)
+    assert.match(html, /registerTranslations/)
+    assert.match(html, /ToolkitI18n\.translate/)
+    assert.match(html, /toolkit:languagechange/)
+  })
+}
+
+test('time and cron format dates using the selected UI locale', async () => {
+  for (const name of ['time-converter', 'cron']) {
+    assert.match(await page(name), /ToolkitI18n\.getLanguage\(\).*en-US.*zh-CN/s)
+  }
+})

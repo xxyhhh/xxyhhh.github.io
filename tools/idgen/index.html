@@ -23,6 +23,7 @@
     const $ = (id)=>document.getElementById(id);
     function copyText(text){
       navigator.clipboard?.writeText(text).catch(()=>{});
+      return ToolkitI18n.translate('common.copied');
     }
     function uuidV4(){
       const a = crypto.getRandomValues(new Uint8Array(16));
@@ -122,46 +123,46 @@
   </header>
 
   <div class="toolbar">
-    <div>支持 UUID v4、v7；自定义密码与随机 Nonce</div>
+    <div data-i18n="idgen.intro">支持 UUID v4、v7；自定义密码与随机 Nonce</div>
   </div>
 
   <div class="layout">
     <div class="card">
-      <h3>UUID 生成</h3>
+      <h3 data-i18n="idgen.uuid">UUID 生成</h3>
       <div class="row">
-        <button class="btn" id="g-v4">生成 UUID v4</button>
-        <button class="btn" id="g-v7">生成 UUID v7</button>
-        <button class="btn" id="copy-uuid">复制</button>
+        <button class="btn" id="g-v4" data-i18n="idgen.v4">生成 UUID v4</button>
+        <button class="btn" id="g-v7" data-i18n="idgen.v7">生成 UUID v7</button>
+        <button class="btn" id="copy-uuid" data-i18n="common.copy">复制</button>
       </div>
       <div id="out-uuid" class="out" style="margin-top:8px;"></div>
     </div>
 
     <div class="card">
-      <h3>随机密码</h3>
+      <h3 data-i18n="idgen.password">随机密码</h3>
       <div class="row" style="margin-bottom:8px;">
-        <label>长度</label>
+        <label data-i18n="common.length">长度</label>
         <input id="pwd-len" type="number" min="4" max="256" value="16" />
         <div class="checks">
-          <label><input id="c-lower" type="checkbox" checked /> 小写</label>
-          <label><input id="c-upper" type="checkbox" checked /> 大写</label>
-          <label><input id="c-digit" type="checkbox" checked /> 数字</label>
-          <label><input id="c-symbol" type="checkbox" /> 符号</label>
+          <label><input id="c-lower" type="checkbox" checked /> <span data-i18n="idgen.lower">小写</span></label>
+          <label><input id="c-upper" type="checkbox" checked /> <span data-i18n="idgen.upper">大写</span></label>
+          <label><input id="c-digit" type="checkbox" checked /> <span data-i18n="idgen.digit">数字</span></label>
+          <label><input id="c-symbol" type="checkbox" /> <span data-i18n="idgen.symbol">符号</span></label>
           <label><input id="c-hex" type="checkbox" /> Hex</label>
           <label><input id="c-base32" type="checkbox" /> Base32</label>
           <label><input id="c-base64url" type="checkbox" /> Base64URL</label>
         </div>
       </div>
       <div class="row">
-        <button class="btn" id="g-pwd">生成密码</button>
-        <button class="btn" id="copy-pwd">复制</button>
+        <button class="btn" id="g-pwd" data-i18n="idgen.generatePassword">生成密码</button>
+        <button class="btn" id="copy-pwd" data-i18n="common.copy">复制</button>
       </div>
       <div id="out-pwd" class="out" style="margin-top:8px;"></div>
     </div>
 
     <div class="card">
-      <h3>Nonce 随机串</h3>
+      <h3 data-i18n="idgen.nonce">Nonce 随机串</h3>
       <div class="row" style="margin-bottom:8px;">
-        <label>长度</label>
+        <label data-i18n="common.length">长度</label>
         <input id="nonce-len" type="number" min="8" max="256" value="16" />
         <div class="checks">
           <label><input id="n-hex" type="checkbox" /> Hex</label>
@@ -170,13 +171,13 @@
         </div>
       </div>
       <div class="row">
-        <button class="btn" id="g-nonce">生成 Nonce</button>
-        <button class="btn" id="copy-nonce">复制</button>
+        <button class="btn" id="g-nonce" data-i18n="idgen.generateNonce">生成 Nonce</button>
+        <button class="btn" id="copy-nonce" data-i18n="common.copy">复制</button>
       </div>
       <div id="out-nonce" class="out" style="margin-top:8px;"></div>
     </div>
   </div>
-  <script src="../../assets/js/i18n.js"></script><script>window.ToolkitPage={root:'../../',tool:true,title:'UUID / Password / Nonce'};</script><script src="../../assets/js/site-shell.js"></script>
+  <script src="../../assets/js/i18n.js"></script><script>ToolkitI18n.registerTranslations({'zh-CN':{'idgen.intro':'支持 UUID v4、v7；自定义密码与随机 Nonce','idgen.uuid':'UUID 生成','idgen.v4':'生成 UUID v4','idgen.v7':'生成 UUID v7','idgen.password':'随机密码','common.length':'长度','idgen.lower':'小写','idgen.upper':'大写','idgen.digit':'数字','idgen.symbol':'符号','idgen.generatePassword':'生成密码','idgen.nonce':'Nonce 随机串','idgen.generateNonce':'生成 Nonce','common.copy':'复制','common.copied':'已复制'},en:{'idgen.intro':'UUID v4/v7, custom passwords, and random nonces','idgen.uuid':'UUID generator','idgen.v4':'Generate UUID v4','idgen.v7':'Generate UUID v7','idgen.password':'Random password','common.length':'Length','idgen.lower':'Lowercase','idgen.upper':'Uppercase','idgen.digit':'Digits','idgen.symbol':'Symbols','idgen.generatePassword':'Generate password','idgen.nonce':'Random nonce','idgen.generateNonce':'Generate nonce','common.copy':'Copy','common.copied':'Copied'}});document.addEventListener('toolkit:languagechange',()=>{});window.ToolkitPage={root:'../../',tool:true,titleZh:'UUID/随机密码/Nonce 生成',titleEn:'UUID / Password / Nonce'};</script><script src="../../assets/js/site-shell.js"></script>
 </body>
 </html>
 

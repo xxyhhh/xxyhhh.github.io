@@ -27,7 +27,7 @@
   </header>
 
   <div class="wrap">
-    <button id="now" class="btn">获取当前时间</button>
+    <button id="now" class="btn" data-i18n="time.now">获取当前时间</button>
     <select id="tz">
       <option value="Asia/Shanghai">Asia/Shanghai</option>
       <option value="UTC">UTC</option>
@@ -35,22 +35,22 @@
       <option value="Europe/London">Europe/London</option>
       <option value="Asia/Tokyo">Asia/Tokyo</option>
     </select>
-    <button id="copyUnix" class="btn">复制 Unix</button>
-    <button id="copyISO" class="btn">复制 ISO</button>
+    <button id="copyUnix" class="btn" data-i18n="time.copyUnix">复制 Unix</button>
+    <button id="copyISO" class="btn" data-i18n="time.copyISO">复制 ISO</button>
   </div>
 
   <div class="main">
     <div class="card">
-      <div class="row"><strong>Unix 时间戳 (秒)</strong></div>
-      <div class="row"><input id="unix" class="mono" placeholder="例如 1717139200" /></div>
-      <div class="row"><button id="u2d" class="btn primary">转为日期</button></div>
+      <div class="row"><strong data-i18n="time.unix">Unix 时间戳（秒）</strong></div>
+      <div class="row"><input id="unix" class="mono" placeholder="例如 1717139200" data-i18n-placeholder="time.unixExample" /></div>
+      <div class="row"><button id="u2d" class="btn primary" data-i18n="time.toDate">转为日期</button></div>
     </div>
     <div class="card">
-      <div class="row"><strong>日期时间 (ISO 或 yyyy-MM-dd HH:mm:ss)</strong></div>
-      <div class="row"><input id="iso" class="mono" placeholder="例如 2025-01-01 12:34:56 或 2025-01-01T12:34:56" /></div>
+      <div class="row"><strong data-i18n="time.date">日期时间（ISO 或 yyyy-MM-dd HH:mm:ss）</strong></div>
+      <div class="row"><input id="iso" class="mono" placeholder="例如 2025-01-01 12:34:56 或 2025-01-01T12:34:56" data-i18n-placeholder="time.dateExample" /></div>
       <div class="row" style="gap:12px;">
-        <button id="d2u" class="btn primary">转为 Unix</button>
-        <button id="toFmt" class="btn">转为 yyyy-MM-dd HH:mm:ss</button>
+        <button id="d2u" class="btn primary" data-i18n="time.toUnix">转为 Unix</button>
+        <button id="toFmt" class="btn" data-i18n="time.toFormat">转为 yyyy-MM-dd HH:mm:ss</button>
       </div>
       <div class="row"><div id="pretty" class="mono" style="opacity:.9;"></div></div>
     </div>
@@ -61,7 +61,8 @@
     const isoInput = document.getElementById('iso');
     const pretty = document.getElementById('pretty');
     const tzSel = document.getElementById('tz');
-    const fmt = (d) => new Intl.DateTimeFormat('zh-CN', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false, timeZone: tzSel.value }).format(d);
+    const locale = () => window.ToolkitI18n && ToolkitI18n.getLanguage() === 'en' ? 'en-US' : 'zh-CN';
+    const fmt = (d) => new Intl.DateTimeFormat(locale(), { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false, timeZone: tzSel.value }).format(d);
 
     // 默认时区
     tzSel.value = 'Asia/Shanghai';
@@ -79,7 +80,7 @@
 
     function formatYmdHms(d){
       try {
-        const parts = new Intl.DateTimeFormat('zh-CN', {
+        const parts = new Intl.DateTimeFormat(locale(), {
           timeZone: tzSel.value,
           year: 'numeric', month: '2-digit', day: '2-digit',
           hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
@@ -125,7 +126,7 @@
     };
 
     async function copyWithFeedback(btn, text){
-      try { await navigator.clipboard.writeText(text || ''); const t = btn.textContent; btn.textContent = '已复制'; setTimeout(()=>btn.textContent=t, 900);} catch(_){}
+      try { await navigator.clipboard.writeText(text || ''); btn.textContent = ToolkitI18n.translate('common.copied'); setTimeout(()=>ToolkitI18n.translatePage(), 900);} catch(_){}
     }
     document.getElementById('copyUnix').onclick = () => copyWithFeedback(document.getElementById('copyUnix'), unixInput.value);
     document.getElementById('copyISO').onclick = () => copyWithFeedback(document.getElementById('copyISO'), isoInput.value);
@@ -134,7 +135,8 @@
     // 初始化
     document.getElementById('now').click();
   </script>
-  <script src="../../assets/js/i18n.js"></script><script>window.ToolkitPage={root:'../../',tool:true,title:'时间戳/时区转换器 / Timestamp & Timezone'};</script><script src="../../assets/js/site-shell.js"></script>
+  <script src="../../assets/js/i18n.js"></script><script>ToolkitI18n.registerTranslations({'zh-CN':{'time.now':'获取当前时间','time.copyUnix':'复制 Unix','time.copyISO':'复制 ISO','time.unix':'Unix 时间戳（秒）','time.toDate':'转为日期','time.date':'日期时间（ISO 或 yyyy-MM-dd HH:mm:ss）','time.toUnix':'转为 Unix','time.toFormat':'转为 yyyy-MM-dd HH:mm:ss','common.copied':'已复制'},en:{'time.now':'Use current time','time.copyUnix':'Copy Unix','time.copyISO':'Copy ISO','time.unix':'Unix timestamp (seconds)','time.toDate':'Convert to date','time.date':'Date and time (ISO or yyyy-MM-dd HH:mm:ss)','time.toUnix':'Convert to Unix','time.toFormat':'Format as yyyy-MM-dd HH:mm:ss','common.copied':'Copied'}});document.addEventListener('toolkit:languagechange',()=>{const d=new Date((Number(document.getElementById('unix').value)||Math.floor(Date.now()/1000))*1000);updatePretty(d)});window.ToolkitPage={root:'../../',tool:true,titleZh:'时间戳/时区转换器',titleEn:'Timestamp & Timezone'};</script><script src="../../assets/js/site-shell.js"></script>
+  <script>ToolkitI18n.registerTranslations({'zh-CN':{'time.unixExample':'例如 1717139200','time.dateExample':'例如 2025-01-01 12:34:56 或 2025-01-01T12:34:56'},en:{'time.unixExample':'Example: 1717139200','time.dateExample':'Example: 2025-01-01 12:34:56 or 2025-01-01T12:34:56'}});ToolkitI18n.translatePage()</script>
 </body>
 </html>
 

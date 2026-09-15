@@ -30,19 +30,19 @@
     };
     function parseJWT(token){
       const parts = token.split('.');
-      if(parts.length !== 3) return { ok:false, err:'格式错误，应为三段 header.payload.signature' };
+      if(parts.length !== 3) return { ok:false, err:ToolkitI18n.translate('jwt.invalidFormat') };
       try{
         const header = JSON.parse(b64u.decode(parts[0]));
         const payload = JSON.parse(b64u.decode(parts[1]));
         const signature = parts[2];
         return { ok:true, header, payload, signature, signingInput: parts[0]+'.'+parts[1] };
       }catch(e){
-        return { ok:false, err: '解码失败：' + String(e) };
+        return { ok:false, err: ToolkitI18n.translate('jwt.decodeFailed')+': '+String(e) };
       }
     }
     async function hmacVerify(alg, secret, signingInput, signatureB64u){
       const map = { HS256: 'SHA-256', HS384: 'SHA-384', HS512: 'SHA-512' };
-      const hash = map[alg]; if(!hash) return { ok:false, err:'不支持的算法' };
+      const hash = map[alg]; if(!hash) return { ok:false, err:ToolkitI18n.translate('jwt.unsupported') };
       const key = await crypto.subtle.importKey('raw', b64u.toUint8(secret), { name:'HMAC', hash }, false, ['sign']);
       const sig = await crypto.subtle.sign('HMAC', key, b64u.toUint8(signingInput));
       // 转 base64url
@@ -64,15 +64,16 @@
       const secret = $('secret').value;
       if(secret && String(r.header.alg||'').startsWith('HS')){
         hmacVerify(r.header.alg, secret, r.signingInput, r.signature).then(res=>{
-          areaS.innerHTML = res.ok ? `<span class=\"ok\">签名有效（${r.header.alg}）</span>` : `<span class=\"bad\">签名无效</span>`;
-        }).catch(()=>{ areaS.innerHTML = '<span class=\"bad\">校验异常</span>'; });
+          areaS.innerHTML = res.ok ? `<span class=\"ok\">${ToolkitI18n.translate('jwt.valid')} (${r.header.alg})</span>` : `<span class=\"bad\">${ToolkitI18n.translate('jwt.invalid')}</span>`;
+        }).catch(()=>{ areaS.innerHTML = `<span class=\"bad\">${ToolkitI18n.translate('jwt.verifyError')}</span>`; });
       }else{
-        areaS.innerHTML = '<span class="label">未校验签名（填写 Secret 并选择 HS 算法可校验）</span>';
+        areaS.innerHTML = `<span class="label">${ToolkitI18n.translate('jwt.notVerified')}</span>`;
       }
     }
     function bind(){
       ['token','secret','alg'].forEach(id=>$(id).addEventListener('input', render));
       render();
+      document.addEventListener('toolkit:languagechange', render);
     }
     document.addEventListener('DOMContentLoaded', bind);
   </script>
@@ -85,22 +86,22 @@
   </header>
 
   <div class="toolbar full">
-    <div class="label">在本地解析，不发送到服务器</div>
+    <div class="label" data-i18n="jwt.local">在本地解析，不发送到服务器</div>
   </div>
 
   <div class="layout">
     <div class="card full">
-      <div class="label" style="margin-bottom:6px;">粘贴 JWT</div>
+      <div class="label" style="margin-bottom:6px;" data-i18n="jwt.paste">粘贴 JWT</div>
       <textarea id="token" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." rows="3"></textarea>
       <div class="row" style="margin-top:8px;">
-        <span class="label">算法</span>
+        <span class="label" data-i18n="jwt.algorithm">算法</span>
         <select id="alg" style="width:auto;">
           <option>HS256</option>
           <option>HS384</option>
           <option>HS512</option>
         </select>
-        <span class="label">Secret（可选，用于校验）</span>
-        <input id="secret" placeholder="输入 HMAC Secret 进行校验" />
+        <span class="label" data-i18n="jwt.secret">Secret（可选，用于校验）</span>
+        <input id="secret" placeholder="输入 HMAC Secret 进行校验" data-i18n-placeholder="jwt.secretPlaceholder" />
       </div>
       <div id="status" style="margin-top:8px;"></div>
     </div>
@@ -114,7 +115,7 @@
       <pre id="payload"></pre>
     </div>
   </div>
-  <script src="../../assets/js/i18n.js"></script><script>window.ToolkitPage={root:'../../',tool:true,title:'JWT 解码与校验 / JWT Inspector'};</script><script src="../../assets/js/site-shell.js"></script>
+  <script src="../../assets/js/i18n.js"></script><script>ToolkitI18n.registerTranslations({'zh-CN':{'jwt.invalidFormat':'格式错误，应为三段 header.payload.signature','jwt.decodeFailed':'解码失败','jwt.unsupported':'不支持的算法','jwt.valid':'签名有效','jwt.invalid':'签名无效','jwt.verifyError':'校验异常','jwt.notVerified':'未校验签名（填写 Secret 并选择 HS 算法可校验）','jwt.local':'在本地解析，不发送到服务器','jwt.paste':'粘贴 JWT','jwt.algorithm':'算法','jwt.secret':'Secret（可选，用于校验）','jwt.secretPlaceholder':'输入 HMAC Secret 进行校验'},en:{'jwt.invalidFormat':'Invalid format; expected header.payload.signature','jwt.decodeFailed':'Decoding failed','jwt.unsupported':'Unsupported algorithm','jwt.valid':'Valid signature','jwt.invalid':'Invalid signature','jwt.verifyError':'Verification error','jwt.notVerified':'Signature not verified (enter a Secret and use an HS algorithm)','jwt.local':'Parsed locally and never sent to a server','jwt.paste':'Paste JWT','jwt.algorithm':'Algorithm','jwt.secret':'Secret (optional, for verification)','jwt.secretPlaceholder':'Enter an HMAC Secret to verify'}});document.addEventListener('toolkit:languagechange',()=>{});window.ToolkitPage={root:'../../',tool:true,titleZh:'JWT 解码与校验',titleEn:'JWT Inspector'};</script><script src="../../assets/js/site-shell.js"></script>
 </body>
 </html>
 
