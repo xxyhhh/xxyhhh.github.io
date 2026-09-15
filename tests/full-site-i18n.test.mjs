@@ -80,3 +80,14 @@ test('QR wrapper forwards language changes and embedded generator translates its
   assert.match(embedded, /data-i18n/)
   assert.match(embedded + embeddedI18n, /qr\.empty/)
 })
+
+test('image tools wrapper forwards language without clearing the current image', async () => {
+  const wrapper = await page('image-tools')
+  const embedded = await readFile(new URL('../image/image-tools-main/index.html', import.meta.url), 'utf8')
+  const embeddedScript = await readFile(new URL('../image/image-tools-main/script.js', import.meta.url), 'utf8')
+  assert.match(wrapper, /postMessage/)
+  assert.match(wrapper, /toolkit:languagechange/)
+  assert.match(embedded, /image-i18n\.js/)
+  assert.match(embeddedScript, /ImageToolsI18n\.t/)
+  assert.doesNotMatch(wrapper, /toolkit:languagechange[^\n]+(?:reload|src\s*=)/)
+})

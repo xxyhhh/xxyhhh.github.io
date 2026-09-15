@@ -9,8 +9,8 @@
 <body>
     <div class="app-container">
         <header class="app-header">
-            <h1>图片工具集</h1>
-            <p class="subtitle">专业的在线图片处理工具</p>
+            <h1 data-image-i18n="title">图片工具集</h1>
+            <p class="subtitle" data-image-i18n="subtitle">专业的在线图片处理工具</p>
         </header>
         <main class="workspace">
             <!-- 工具栏 -->
@@ -21,7 +21,7 @@
                             <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
                             <path d="M3 3v5h5"/>
                         </svg>
-                        旋转
+                        <span data-image-i18n="rotate">旋转</span>
                     </button>
                     <button class="tool-btn" data-tool="flip">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -29,14 +29,14 @@
                             <path d="m17 8-5-5-5 5"/>
                             <path d="m17 16-5 5-5-5"/>
                         </svg>
-                        翻转
+                        <span data-image-i18n="flip">翻转</span>
                     </button>
                     <button class="tool-btn" data-tool="format">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                             <polyline points="22,6 12,13 2,6"/>
                         </svg>
-                        格式转换
+                        <span data-image-i18n="convert">格式转换</span>
                     </button>
                 </div>
             </div>
@@ -51,13 +51,14 @@
                             <line x1="12" y1="3" x2="12" y2="15"/>
                         </svg>
                     </div>
-                    <h3>点击或拖放图片到此处</h3>
-                    <p>支持 JPG、PNG、WebP、GIF 格式</p>
+                    <h3 data-image-i18n="upload">点击或拖放图片到此处</h3>
+                    <p data-image-i18n="formats">支持 JPG、PNG、WebP、GIF 格式</p>
                     <input type="file" id="fileInput" accept="image/*" style="display: none;">
                 </div>
             </div>
         </main>
     </div>
+    <script src="./image-i18n.js"></script>
     <script src="./script.js"></script>
 </body>
 </html>

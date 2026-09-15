@@ -51,13 +51,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // 检查文件类型
         const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
         if (!validTypes.includes(file.type)) {
-            showMessage('请上传 JPG、PNG、WebP 或 GIF 格式的图片', 'error');
+            showMessage(ImageToolsI18n.t('invalidType'), 'error');
             return;
         }
 
         // 检查文件大小（限制为 10MB）
         if (file.size > 10 * 1024 * 1024) {
-            showMessage('图片大小不能超过 10MB', 'error');
+            showMessage(ImageToolsI18n.t('tooLarge'), 'error');
             return;
         }
 
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
         img.onerror = () => {
             URL.revokeObjectURL(state.objectUrl);
             state.objectUrl = '';
-            showMessage('图片解码失败', 'error');
+            showMessage(ImageToolsI18n.t('decodeFailed'), 'error');
         };
         img.src = state.objectUrl;
     }
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dialog.className = 'format-dialog';
         dialog.innerHTML = `
             <div class="format-options">
-                <h3>选择输出格式</h3>
+                <h3>${ImageToolsI18n.t('chooseFormat')}</h3>
                 <div class="format-buttons">
                     ${formats.map(f => `
                         <button class="format-btn" data-format="${f.type}">${f.name}</button>
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 link.click();
 
                 dialog.remove();
-                showMessage('格式转换成功！', 'success');
+                showMessage(ImageToolsI18n.t('success'), 'success');
             });
         });
 

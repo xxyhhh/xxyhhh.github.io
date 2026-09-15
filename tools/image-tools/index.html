@@ -13,9 +13,15 @@
     <div class="tool-bar"><button type="button" data-language-toggle>中 / EN</button></div>
   </header>
   <div class="iframe-wrap">
-    <iframe class="iframe" src="../../image/image-tools-main/index.html"></iframe>
+    <iframe id="imageToolsFrame" class="iframe" src="../../image/image-tools-main/index.html" title="Image Tools"></iframe>
   </div>
-  <script src="../../assets/js/i18n.js"></script><script>window.ToolkitPage={root:'../../',tool:true,title:'图片工具集 / Image Tools'};</script><script src="../../assets/js/site-shell.js"></script>
+  <script src="../../assets/js/i18n.js"></script><script>window.ToolkitPage={root:'../../',tool:true,titleZh:'图片工具集',titleEn:'Image Tools'};</script><script src="../../assets/js/site-shell.js"></script>
+  <script>
+    const imageToolsFrame=document.querySelector('#imageToolsFrame');
+    function sendImageToolsLanguage(){imageToolsFrame.contentWindow?.postMessage({type:'toolkit-language',language:ToolkitI18n.getLanguage()},location.origin)}
+    imageToolsFrame.addEventListener('load',sendImageToolsLanguage);
+    document.addEventListener('toolkit:languagechange',sendImageToolsLanguage);
+  </script>
 </body>
 </html>
 
