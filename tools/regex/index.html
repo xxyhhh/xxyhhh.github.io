@@ -53,7 +53,7 @@
     function render(){
       const {ok,re,err} = buildRegex();
       const src = $('source').value;
-      if(!ok){ $('preview').innerHTML = '<span class="small">语法错误：'+escapeHtml(err)+'</span>'; $('groups').innerHTML=''; return; }
+      if(!ok){ $('preview').innerHTML = '<span class="small">'+ToolkitI18n.translate('regex.syntaxError')+': '+escapeHtml(err)+'</span>'; $('groups').innerHTML=''; return; }
       $('preview').innerHTML = highlight(src, re);
       // 分组详情（前 20 次匹配）
       const lines = [];
@@ -65,12 +65,13 @@
         lines.push(header+"\n"+parts);
         if(m[0].length === 0){ r.lastIndex++; }
       }
-      $('groups').textContent = lines.length? lines.join('\n\n') : '无匹配';
+      $('groups').textContent = lines.length? lines.join('\n\n') : ToolkitI18n.translate('regex.noMatch');
     }
     function bind(){
       ['pattern','source'].forEach(id=>$(id).addEventListener('input', render));
       ['i','m','s','u','y','g'].forEach(f=>$('f-'+f).addEventListener('change', render));
       render();
+      document.addEventListener('toolkit:languagechange', render);
     }
     document.addEventListener('DOMContentLoaded', bind);
   </script>
@@ -79,21 +80,21 @@
   <header data-site-header><a class="back" href="../../index.html">&lt; 返回首页</a><button data-language-toggle>中 / EN</button></header>
 
   <details class="cheat" open>
-    <summary>常用正则语法速查</summary>
+    <summary data-i18n="regex.cheatTitle">常用正则语法速查</summary>
     <div class="cheat-grid">
-      <div><span class="kbd">.</span> 任意字符；<span class="kbd">\d</span> 数字；<span class="kbd">\w</span> 单词；<span class="kbd">\s</span> 空白</div>
-      <div><span class="kbd">^</span>/<span class="kbd">$</span> 行首/行尾；<span class="kbd">\b</span> 单词边界</div>
-      <div><span class="kbd">+</span> 1+；<span class="kbd">*</span> 0+；<span class="kbd">?</span> 0/1；<span class="kbd">{m,n}</span> 次数范围</div>
-      <div><span class="kbd">[abc]</span> 字符集；<span class="kbd">[^abc]</span> 取反；<span class="kbd">(A|B)</span> 分支</div>
-      <div><span class="kbd">( )</span> 捕获分组；<span class="kbd">(?: )</span> 非捕获；<span class="kbd">(?&lt;=x)</span> 断言</div>
-      <div>标志位：<span class="kbd">g</span> 全局 <span class="kbd">i</span> 忽略大小写 <span class="kbd">m</span> 多行 <span class="kbd">s</span> 单行 <span class="kbd">u</span> Unicode <span class="kbd">y</span> 粘连</div>
-      <div>示例：<span class="kbd">(\w+)@(\w+).com</span> 提取邮箱用户名/域名</div>
-      <div>示例：<span class="kbd">https?:\/\/[^\s]+</span> 匹配 URL</div>
+      <div data-i18n-html="regex.cheatChars"><span class="kbd">.</span> 任意字符；<span class="kbd">\d</span> 数字；<span class="kbd">\w</span> 单词；<span class="kbd">\s</span> 空白</div>
+      <div data-i18n-html="regex.cheatAnchors"><span class="kbd">^</span>/<span class="kbd">$</span> 行首/行尾；<span class="kbd">\b</span> 单词边界</div>
+      <div data-i18n-html="regex.cheatCounts"><span class="kbd">+</span> 1+；<span class="kbd">*</span> 0+；<span class="kbd">?</span> 0/1；<span class="kbd">{m,n}</span> 次数范围</div>
+      <div data-i18n-html="regex.cheatSets"><span class="kbd">[abc]</span> 字符集；<span class="kbd">[^abc]</span> 取反；<span class="kbd">(A|B)</span> 分支</div>
+      <div data-i18n-html="regex.cheatGroups"><span class="kbd">( )</span> 捕获分组；<span class="kbd">(?: )</span> 非捕获；<span class="kbd">(?&lt;=x)</span> 断言</div>
+      <div data-i18n-html="regex.cheatFlags">标志位：<span class="kbd">g</span> 全局 <span class="kbd">i</span> 忽略大小写 <span class="kbd">m</span> 多行 <span class="kbd">s</span> 单行 <span class="kbd">u</span> Unicode <span class="kbd">y</span> 粘连</div>
+      <div data-i18n-html="regex.cheatEmail">示例：<span class="kbd">(\w+)@(\w+).com</span> 提取邮箱用户名/域名</div>
+      <div data-i18n-html="regex.cheatUrl">示例：<span class="kbd">https?:\/\/[^\s]+</span> 匹配 URL</div>
     </div>
   </details>
 
   <div class="toolbar">
-    <input id="pattern" placeholder="输入正则表达式" />
+    <input id="pattern" placeholder="输入正则表达式" data-i18n-placeholder="regex.pattern" />
     <label><input type="checkbox" id="f-g"/> g</label>
     <label><input type="checkbox" id="f-i"/> i</label>
     <label><input type="checkbox" id="f-m"/> m</label>
@@ -103,16 +104,17 @@
   </div>
 
   <div class="layout">
-    <textarea id="source" placeholder="在此粘贴待匹配文本，修改上方正则即可实时匹配与高亮"></textarea>
+    <textarea id="source" placeholder="在此粘贴待匹配文本，修改上方正则即可实时匹配与高亮" data-i18n-placeholder="regex.source"></textarea>
     <div class="card">
       <div class="output" id="preview"></div>
       <div class="groups">
-        <div class="title">分组与匹配列表（最多 20 项）</div>
+        <div class="title" data-i18n="regex.groups">分组与匹配列表（最多 20 项）</div>
         <pre id="groups" class="output" style="margin-top:8px;"></pre>
       </div>
     </div>
   </div>
-  <script src="../../assets/js/i18n.js"></script><script>window.ToolkitPage={root:'../../',tool:true,title:'正则测试台 / Regex Playground'};</script><script src="../../assets/js/site-shell.js"></script>
+  <script src="../../assets/js/i18n.js"></script><script>ToolkitI18n.registerTranslations({'zh-CN':{'regex.cheatTitle':'常用正则语法速查','regex.pattern':'输入正则表达式','regex.source':'在此粘贴待匹配文本，修改上方正则即可实时匹配与高亮','regex.groups':'分组与匹配列表（最多 20 项）','regex.syntaxError':'语法错误','regex.noMatch':'无匹配'},en:{'regex.cheatTitle':'Common regex syntax cheat sheet','regex.pattern':'Enter a regular expression','regex.source':'Paste text to test; edits are matched and highlighted instantly','regex.groups':'Groups and matches (up to 20)','regex.syntaxError':'Syntax error','regex.noMatch':'No matches'}});document.addEventListener('toolkit:languagechange',()=>{});window.ToolkitPage={root:'../../',tool:true,titleZh:'正则测试台',titleEn:'Regex Playground'};</script><script src="../../assets/js/site-shell.js"></script>
+  <script>ToolkitI18n.registerTranslations({'zh-CN':{'regex.cheatChars':'<span class="kbd">.</span> 任意字符；<span class="kbd">\\d</span> 数字；<span class="kbd">\\w</span> 单词；<span class="kbd">\\s</span> 空白','regex.cheatAnchors':'<span class="kbd">^</span>/<span class="kbd">$</span> 行首/行尾；<span class="kbd">\\b</span> 单词边界','regex.cheatCounts':'<span class="kbd">+</span> 1+；<span class="kbd">*</span> 0+；<span class="kbd">?</span> 0/1；<span class="kbd">{m,n}</span> 次数范围','regex.cheatSets':'<span class="kbd">[abc]</span> 字符集；<span class="kbd">[^abc]</span> 取反；<span class="kbd">(A|B)</span> 分支','regex.cheatGroups':'<span class="kbd">( )</span> 捕获分组；<span class="kbd">(?: )</span> 非捕获；<span class="kbd">(?&lt;=x)</span> 断言','regex.cheatFlags':'标志位：<span class="kbd">g</span> 全局 <span class="kbd">i</span> 忽略大小写 <span class="kbd">m</span> 多行 <span class="kbd">s</span> 单行 <span class="kbd">u</span> Unicode <span class="kbd">y</span> 粘连','regex.cheatEmail':'示例：<span class="kbd">(\\w+)@(\\w+).com</span> 提取邮箱用户名/域名','regex.cheatUrl':'示例：<span class="kbd">https?:\\/\\/[^\\s]+</span> 匹配 URL'},en:{'regex.cheatChars':'<span class="kbd">.</span> any character; <span class="kbd">\\d</span> digit; <span class="kbd">\\w</span> word; <span class="kbd">\\s</span> whitespace','regex.cheatAnchors':'<span class="kbd">^</span>/<span class="kbd">$</span> line start/end; <span class="kbd">\\b</span> word boundary','regex.cheatCounts':'<span class="kbd">+</span> 1+; <span class="kbd">*</span> 0+; <span class="kbd">?</span> 0/1; <span class="kbd">{m,n}</span> range','regex.cheatSets':'<span class="kbd">[abc]</span> set; <span class="kbd">[^abc]</span> negated set; <span class="kbd">(A|B)</span> alternation','regex.cheatGroups':'<span class="kbd">( )</span> capture; <span class="kbd">(?: )</span> non-capture; <span class="kbd">(?&lt;=x)</span> assertion','regex.cheatFlags':'Flags: <span class="kbd">g</span> global <span class="kbd">i</span> ignore case <span class="kbd">m</span> multiline <span class="kbd">s</span> dot all <span class="kbd">u</span> Unicode <span class="kbd">y</span> sticky','regex.cheatEmail':'Example: <span class="kbd">(\\w+)@(\\w+).com</span> extract email user/domain','regex.cheatUrl':'Example: <span class="kbd">https?:\\/\\/[^\\s]+</span> match a URL'}});ToolkitI18n.translatePage()</script>
 </body>
 </html>
 

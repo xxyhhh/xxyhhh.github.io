@@ -20,6 +20,7 @@
     currentLanguage = normaliseLanguage(language)
     document.documentElement.lang = currentLanguage
     document.querySelectorAll('[data-i18n]').forEach(node => { node.textContent = translate(node.dataset.i18n, currentLanguage) })
+    document.querySelectorAll('[data-i18n-html]').forEach(node => { node.innerHTML = translate(node.dataset.i18nHtml, currentLanguage) })
     document.querySelectorAll('[data-i18n-placeholder]').forEach(node => { node.placeholder = translate(node.dataset.i18nPlaceholder, currentLanguage) })
     document.querySelectorAll('[data-i18n-aria-label]').forEach(node => { node.setAttribute('aria-label', translate(node.dataset.i18nAriaLabel, currentLanguage)) })
     document.querySelectorAll('[data-i18n-title]').forEach(node => { node.title = translate(node.dataset.i18nTitle, currentLanguage) })

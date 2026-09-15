@@ -25,20 +25,20 @@
 
   <div class="toolbar">
     <div class="panel">
-      <button class="btn" id="b64enc">Base64 编码</button>
-      <button class="btn" id="b64dec">Base64 解码</button>
-      <button class="btn" id="urlenc">URL 编码</button>
-      <button class="btn" id="urldec">URL 解码</button>
+      <button class="btn" id="b64enc" data-i18n="codec.b64enc">Base64 编码</button>
+      <button class="btn" id="b64dec" data-i18n="codec.b64dec">Base64 解码</button>
+      <button class="btn" id="urlenc" data-i18n="codec.urlenc">URL 编码</button>
+      <button class="btn" id="urldec" data-i18n="codec.urldec">URL 解码</button>
       <button class="btn" id="utf8to16">UTF-8 → UTF-16</button>
       <button class="btn" id="u16to8">UTF-16 → UTF-8</button>
-      <label class="btn" for="file">文件 → Base64</label>
+      <label class="btn" for="file" data-i18n="codec.file">文件 → Base64</label>
       <input id="file" type="file" />
     </div>
   </div>
 
   <div class="layout">
-    <textarea id="left" placeholder="输入待处理文本..."></textarea>
-    <textarea id="right" placeholder="结果输出..." readonly></textarea>
+    <textarea id="left" placeholder="输入待处理文本..." data-i18n-placeholder="codec.input"></textarea>
+    <textarea id="right" placeholder="结果输出..." data-i18n-placeholder="codec.output" readonly></textarea>
   </div>
 
   <script>
@@ -49,9 +49,9 @@
     function get(){ return left.value || ''; }
 
     $('b64enc').onclick = ()=> set(btoa(unescape(encodeURIComponent(get()))));
-    $('b64dec').onclick = ()=> { try{ set(decodeURIComponent(escape(atob(get())))); } catch(e){ set('解码失败：' + e.message); } };
+    $('b64dec').onclick = ()=> { try{ set(decodeURIComponent(escape(atob(get())))); } catch(e){ set(ToolkitI18n.translate('codec.decodeFailed')+': '+e.message); } };
     $('urlenc').onclick = ()=> set(encodeURIComponent(get()));
-    $('urldec').onclick = ()=> { try{ set(decodeURIComponent(get())); } catch(e){ set('解码失败：' + e.message); } };
+    $('urldec').onclick = ()=> { try{ set(decodeURIComponent(get())); } catch(e){ set(ToolkitI18n.translate('codec.decodeFailed')+': '+e.message); } };
 
     $('utf8to16').onclick = ()=> {
       const bytes = new TextEncoder().encode(get());
@@ -75,7 +75,7 @@
       r.readAsDataURL(f);
     });
   </script>
-  <script src="../../assets/js/i18n.js"></script><script>window.ToolkitPage={root:'../../',tool:true,title:'Base64 / URL / UTF-8 Codec'};</script><script src="../../assets/js/site-shell.js"></script>
+  <script src="../../assets/js/i18n.js"></script><script>ToolkitI18n.registerTranslations({'zh-CN':{'codec.b64enc':'Base64 编码','codec.b64dec':'Base64 解码','codec.urlenc':'URL 编码','codec.urldec':'URL 解码','codec.file':'文件 → Base64','codec.input':'输入待处理文本...','codec.output':'结果输出...','codec.decodeFailed':'解码失败'},en:{'codec.b64enc':'Encode Base64','codec.b64dec':'Decode Base64','codec.urlenc':'Encode URL','codec.urldec':'Decode URL','codec.file':'File → Base64','codec.input':'Enter text to process...','codec.output':'Output...','codec.decodeFailed':'Decoding failed'}});document.addEventListener('toolkit:languagechange',()=>{});window.ToolkitPage={root:'../../',tool:true,titleZh:'Base64 / URL / UTF-8 编解码',titleEn:'Base64 / URL / UTF-8 Codec'};</script><script src="../../assets/js/site-shell.js"></script>
 </body>
 </html>
 

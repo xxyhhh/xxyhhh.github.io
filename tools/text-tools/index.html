@@ -27,28 +27,28 @@
   </header>
 
   <div class="toolbar">
-    <button class="btn" id="upper">大写</button>
-    <button class="btn" id="lower">小写</button>
-    <button class="btn" id="title">首字母大写</button>
-    <button class="btn" id="trim">去首尾空白</button>
-    <button class="btn" id="dedupe">行去重</button>
-    <button class="btn" id="sortAsc">升序排序</button>
-    <button class="btn" id="sortDesc">降序排序</button>
-    <button class="btn" id="commaToNl">逗号→换行</button>
-    <button class="btn" id="nlToComma">换行→逗号</button>
+    <button class="btn" id="upper" data-i18n="text.upper">大写</button>
+    <button class="btn" id="lower" data-i18n="text.lower">小写</button>
+    <button class="btn" id="title" data-i18n="text.titleCase">首字母大写</button>
+    <button class="btn" id="trim" data-i18n="text.trim">去首尾空白</button>
+    <button class="btn" id="dedupe" data-i18n="text.dedupe">行去重</button>
+    <button class="btn" id="sortAsc" data-i18n="text.sortAsc">升序排序</button>
+    <button class="btn" id="sortDesc" data-i18n="text.sortDesc">降序排序</button>
+    <button class="btn" id="commaToNl" data-i18n="text.commaToNl">逗号→换行</button>
+    <button class="btn" id="nlToComma" data-i18n="text.nlToComma">换行→逗号</button>
   </div>
 
   <div class="layout">
-    <textarea id="txt" placeholder="在此粘贴或输入文本...\n支持：大小写、去重、排序、前后缀、分隔符转换等"></textarea>
+    <textarea id="txt" placeholder="在此粘贴或输入文本..." data-i18n-placeholder="text.input"></textarea>
     <div class="panel">
-      <div class="row"><label>为每行添加前缀/后缀</label></div>
-      <div class="row"><input id="prefix" placeholder="前缀，如 \"[\"" /></div>
-      <div class="row"><input id="suffix" placeholder="后缀，如 \"]\"" /></div>
-      <div class="row"><button class="btn primary" id="applyAffix">应用前后缀</button></div>
-      <div class="row"><label><input type="checkbox" id="ignoreCase"/> 去重/排序时忽略大小写</label></div>
-      <div class="row"><label><input type="checkbox" id="trimLine" checked/> 去除每行首尾空白</label></div>
-      <div class="row"><button class="btn" id="copy">复制全部</button></div>
-      <div class="row"><button class="btn" id="clear">清空</button></div>
+      <div class="row"><label data-i18n="text.affix">为每行添加前缀/后缀</label></div>
+      <div class="row"><input id="prefix" placeholder="前缀，如 \"[\"" data-i18n-placeholder="text.prefix" /></div>
+      <div class="row"><input id="suffix" placeholder="后缀，如 \"]\"" data-i18n-placeholder="text.suffix" /></div>
+      <div class="row"><button class="btn primary" id="applyAffix" data-i18n="text.apply">应用前后缀</button></div>
+      <div class="row"><label><input type="checkbox" id="ignoreCase"/> <span data-i18n="text.ignoreCase">去重/排序时忽略大小写</span></label></div>
+      <div class="row"><label><input type="checkbox" id="trimLine" checked/> <span data-i18n="text.trimLine">去除每行首尾空白</span></label></div>
+      <div class="row"><button class="btn" id="copy" data-i18n="text.copy">复制全部</button></div>
+      <div class="row"><button class="btn" id="clear" data-i18n="text.clear">清空</button></div>
     </div>
   </div>
 
@@ -76,10 +76,11 @@
     $('commaToNl').onclick = ()=> txt.value = txt.value.split(',').map(s=>s.trim()).filter(Boolean).join('\n');
     $('nlToComma').onclick = ()=> txt.value = txt.value.replace(/\r\n?/g,'\n').split('\n').map(s=>s.trim()).filter(Boolean).join(', ');
     $('applyAffix').onclick = ()=> withLines(ls=> ls.map(s=> s ? ($('prefix').value||'') + s + ($('suffix').value||'') : s));
-    $('copy').onclick = async ()=> { try{ await navigator.clipboard.writeText(txt.value); const t = $('copy').textContent; $('copy').textContent='已复制'; setTimeout(()=>$('copy').textContent=t,900);}catch(e){} };
+    $('copy').onclick = async ()=> { try{ await navigator.clipboard.writeText(txt.value); $('copy').textContent=ToolkitI18n.translate('common.copied'); setTimeout(()=>$('copy').textContent=ToolkitI18n.translate('text.copy'),900);}catch(e){} };
     $('clear').onclick = ()=> txt.value='';
   </script>
-  <script src="../../assets/js/i18n.js"></script><script>window.ToolkitPage={root:'../../',tool:true,title:'文本整理工具 / Text Utilities'};</script><script src="../../assets/js/site-shell.js"></script>
+  <script src="../../assets/js/i18n.js"></script><script>ToolkitI18n.registerTranslations({'zh-CN':{'text.upper':'大写','text.lower':'小写','text.titleCase':'首字母大写','text.trim':'去首尾空白','text.dedupe':'行去重','text.sortAsc':'升序排序','text.sortDesc':'降序排序','text.commaToNl':'逗号→换行','text.nlToComma':'换行→逗号','text.input':'在此粘贴或输入文本...\n支持：大小写、去重、排序、前后缀、分隔符转换等','text.affix':'为每行添加前缀/后缀','text.apply':'应用前后缀','text.ignoreCase':'去重/排序时忽略大小写','text.trimLine':'去除每行首尾空白','text.copy':'复制全部','text.clear':'清空','common.copied':'已复制'},en:{'text.upper':'UPPERCASE','text.lower':'lowercase','text.titleCase':'Title Case','text.trim':'Trim outer whitespace','text.dedupe':'Remove duplicate lines','text.sortAsc':'Sort ascending','text.sortDesc':'Sort descending','text.commaToNl':'Commas → Lines','text.nlToComma':'Lines → Commas','text.input':'Paste or enter text here...\nSupports case conversion, deduplication, sorting, affixes, and delimiters','text.affix':'Add a prefix/suffix to each line','text.apply':'Apply affixes','text.ignoreCase':'Ignore case when deduplicating/sorting','text.trimLine':'Trim each line','text.copy':'Copy all','text.clear':'Clear','common.copied':'Copied'}});document.addEventListener('toolkit:languagechange',()=>{});window.ToolkitPage={root:'../../',tool:true,titleZh:'文本整理工具',titleEn:'Text Utilities'};</script><script src="../../assets/js/site-shell.js"></script>
+  <script>ToolkitI18n.registerTranslations({'zh-CN':{'text.prefix':'前缀，如 "["','text.suffix':'后缀，如 "]"'},en:{'text.prefix':'Prefix, e.g. "["','text.suffix':'Suffix, e.g. "]"'}});ToolkitI18n.translatePage()</script>
 </body>
 </html>
 

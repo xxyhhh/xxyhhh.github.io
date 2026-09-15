@@ -31,15 +31,15 @@
       <option>CSV</option>
       <option>YAML</option>
     </select>
-    <button class="btn" id="convert">转换</button>
-    <button class="btn" id="pretty">美化</button>
-    <button class="btn" id="minify">压缩</button>
-    <button class="btn" id="copy">复制结果</button>
+    <button class="btn" id="convert" data-i18n="data.convert">转换</button>
+    <button class="btn" id="pretty" data-i18n="data.pretty">美化</button>
+    <button class="btn" id="minify" data-i18n="data.minify">压缩</button>
+    <button class="btn" id="copy" data-i18n="data.copy">复制结果</button>
   </div>
 
   <div class="layout">
-    <textarea id="left" placeholder="输入 JSON/CSV/YAML"></textarea>
-    <textarea id="right" placeholder="结果输出" readonly></textarea>
+    <textarea id="left" placeholder="输入 JSON/CSV/YAML" data-i18n-placeholder="data.input"></textarea>
+    <textarea id="right" placeholder="结果输出" data-i18n-placeholder="data.output" readonly></textarea>
   </div>
 
   <script>
@@ -157,21 +157,21 @@
         if(from==='JSON') data = JSON.parse(left.value || 'null');
         if(from==='CSV') data = parseCSV(left.value);
         if(from==='YAML') data = parseYAML(left.value);
-      }catch(e){ right.value = '解析失败：'+e.message; return; }
+      }catch(e){ right.value = ToolkitI18n.translate('data.parseFailed')+': '+e.message; return; }
 
       try{
         if(to==='JSON') right.value = JSON.stringify(data, null, 2);
         if(to==='CSV') right.value = toCSV(data);
         if(to==='YAML') right.value = toYAML(data);
-      }catch(e){ right.value = '生成失败：'+e.message; }
+      }catch(e){ right.value = ToolkitI18n.translate('data.generateFailed')+': '+e.message; }
     }
 
     $('convert').onclick = convert;
-    $('pretty').onclick = ()=>{ try{ right.value = JSON.stringify(JSON.parse(left.value), null, 2); }catch(e){ right.value='美化失败：'+e.message; } };
-    $('minify').onclick = ()=>{ try{ right.value = JSON.stringify(JSON.parse(left.value)); }catch(e){ right.value='压缩失败：'+e.message; } };
-    $('copy').onclick = async ()=> { try{ await navigator.clipboard.writeText(right.value); const t=$('copy').textContent; $('copy').textContent='已复制'; setTimeout(()=>$('copy').textContent=t,900);}catch(e){} };
+    $('pretty').onclick = ()=>{ try{ right.value = JSON.stringify(JSON.parse(left.value), null, 2); }catch(e){ right.value=ToolkitI18n.translate('data.prettyFailed')+': '+e.message; } };
+    $('minify').onclick = ()=>{ try{ right.value = JSON.stringify(JSON.parse(left.value)); }catch(e){ right.value=ToolkitI18n.translate('data.minifyFailed')+': '+e.message; } };
+    $('copy').onclick = async ()=> { try{ await navigator.clipboard.writeText(right.value); $('copy').textContent=ToolkitI18n.translate('common.copied'); setTimeout(()=>$('copy').textContent=ToolkitI18n.translate('data.copy'),900);}catch(e){} };
   </script>
-  <script src="../../assets/js/i18n.js"></script><script>window.ToolkitPage={root:'../../',tool:true,title:'JSON / CSV / YAML Converter'};</script><script src="../../assets/js/site-shell.js"></script>
+  <script src="../../assets/js/i18n.js"></script><script>ToolkitI18n.registerTranslations({'zh-CN':{'data.convert':'转换','data.pretty':'美化','data.minify':'压缩','data.copy':'复制结果','data.input':'输入 JSON/CSV/YAML','data.output':'结果输出','data.parseFailed':'解析失败','data.generateFailed':'生成失败','data.prettyFailed':'美化失败','data.minifyFailed':'压缩失败','common.copied':'已复制'},en:{'data.convert':'Convert','data.pretty':'Format','data.minify':'Minify','data.copy':'Copy result','data.input':'Enter JSON/CSV/YAML','data.output':'Output','data.parseFailed':'Parse failed','data.generateFailed':'Generation failed','data.prettyFailed':'Formatting failed','data.minifyFailed':'Minification failed','common.copied':'Copied'}});document.addEventListener('toolkit:languagechange',()=>{});window.ToolkitPage={root:'../../',tool:true,titleZh:'JSON / CSV / YAML 转换器',titleEn:'JSON / CSV / YAML Converter'};</script><script src="../../assets/js/site-shell.js"></script>
 </body>
 </html>
 
