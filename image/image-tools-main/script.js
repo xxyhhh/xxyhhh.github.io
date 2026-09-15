@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
         currentImage: null,
         rotation: 0,
         isFlipped: false,
-        originalImage: null
+        originalImage: null,
+        objectUrl: ''
     };
 
     // 点击上传
@@ -60,19 +61,21 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 读取文件
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-                state.originalImage = img;
-                state.currentImage = img;
-                displayImage(img);
-                toolbar.style.display = 'block';
-            };
-            img.src = e.target.result;
+        if (state.objectUrl) URL.revokeObjectURL(state.objectUrl);
+        state.objectUrl = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => {
+            state.originalImage = img;
+            state.currentImage = img;
+            displayImage(img);
+            toolbar.style.display = 'block';
         };
-        reader.readAsDataURL(file);
+        img.onerror = () => {
+            URL.revokeObjectURL(state.objectUrl);
+            state.objectUrl = '';
+            showMessage('图片解码失败', 'error');
+        };
+        img.src = state.objectUrl;
     }
 
     // 显示图片
@@ -226,4 +229,10 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => div.remove(), 300);
         }, 3000);
     }
+    window.addEventListener('beforeunload', () => {
+        if (state.objectUrl) URL.revokeObjectURL(state.objectUrl);
+        const canvas = uploadBox.querySelector('canvas');
+        if (canvas) { canvas.width = 0; canvas.height = 0; }
+        state.currentImage = state.originalImage = null;
+    });
 });

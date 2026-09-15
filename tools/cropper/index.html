@@ -45,11 +45,14 @@
     const file = document.getElementById('file');
     const thumb = document.getElementById('thumb');
     let cropper;
+    let currentObjectUrl = '';
 
     file.addEventListener('change', e => {
       const f = e.target.files[0];
       if (!f) return;
+      if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
       const url = URL.createObjectURL(f);
+      currentObjectUrl = url;
       img.src = url; img.style.display='block';
       if (cropper) cropper.destroy();
       cropper = new Cropper(img, { viewMode:1, preview: thumb.parentElement, autoCropArea: 0.9, background:false });
@@ -71,6 +74,10 @@
         URL.revokeObjectURL(a.href);
       }, 'image/png');
     };
+    window.addEventListener('beforeunload', () => {
+      cropper?.destroy();
+      if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
+    });
   </script>
 </body>
 </html>
