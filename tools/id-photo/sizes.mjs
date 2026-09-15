@@ -1,0 +1,2 @@
+export function mmToPixels(widthMm,heightMm,dpi=300){const factor=dpi/25.4;return{width:Math.round(widthMm*factor),height:Math.round(heightMm*factor)}}
+export const PHOTO_SIZES=[{id:'one-inch',zh:'一寸',en:'1 inch',mm:[25,35]},{id:'two-inch',zh:'二寸',en:'2 inch',mm:[35,49]},{id:'small-one-inch',zh:'小一寸',en:'Small 1 inch',mm:[22,32]},{id:'small-two-inch',zh:'小二寸',en:'Small 2 inch',mm:[35,45]}].map(item=>({...item,...mmToPixels(...item.mm,300)}));
