@@ -1,14 +1,14 @@
 ---
 project: 在线工具集视觉重设计与证件照工具
 workflow_version: 1
-current_stage: 7
-stage_status: in_progress
+current_stage: 8
+stage_status: awaiting_confirmation
 active_agent: Codex
-last_confirmed_stage: 6
+last_confirmed_stage: 7
 prototype_mode: stitch
 prototype_version: stitch-v1
 prd_version: v1
-updated_at: 2026-09-14T21:25:00+08:00
+updated_at: 2026-09-15T09:10:00+08:00
 ---
 
 # 工作流状态
@@ -24,11 +24,11 @@ updated_at: 2026-09-14T21:25:00+08:00
 
 ## 当前工作
 
-阶段 7：按开发计划实施中。
+阶段 8：线上验收版已实现，等待用户验收反馈。
 
 ## 下一步允许动作
 
-完成八项实施任务、测试与发布验收后进入阶段 8。
+推送 `gh-pages` 后由用户在线验收视觉与主要路径；根据反馈修正后关闭工作流。
 
 ## 阻断项
 

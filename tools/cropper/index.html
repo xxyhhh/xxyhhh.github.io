@@ -5,23 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>图片裁剪（CropperJS）</title>
   <link rel="stylesheet" href="../../assets/css/base.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css" />
+  <link rel="stylesheet" href="../../assets/vendor/cropper/cropper.min.css" />
   <style>
     .panel { padding:12px; border-bottom:1px solid var(--border); background: rgba(10,16,34,.6); display:flex; gap:8px; align-items:center; }
     .panel input[type=file] { color:#9aa3ba; }
     .work { display:flex; gap:12px; padding:12px; height: calc(100vh - 112px); }
-    .left { flex: 2; background:#0a122c; border:1px solid var(--border); border-radius: 12px; overflow:hidden; display:flex; align-items:center; justify-content:center; }
+    .left { flex: 2; background:var(--surface-lowest); border:1px solid var(--border); border-radius: 12px; overflow:hidden; display:flex; align-items:center; justify-content:center; }
     .right { flex: 1; display:flex; flex-direction:column; gap:12px; }
-    .preview { flex:1; background:#0a122c; border:1px solid var(--border); border-radius:12px; display:flex; align-items:center; justify-content:center; }
+    .preview { flex:1; background:var(--surface-lowest); border:1px solid var(--border); border-radius:12px; display:flex; align-items:center; justify-content:center; }
     .preview img { max-width:100%; }
     .actions { display:flex; gap:8px; flex-wrap: wrap; }
   </style>
 </head>
 <body>
-  <header class="tool-header">
+  <header class="tool-header" data-site-header>
     <a class="back" href="../../index.html">&lt; 返回首页</a>
     <div class="tool-title">图片裁剪（CropperJS）</div>
-    <div class="tool-bar"><a class="button" href="https://github.com/fengyuanchen/cropperjs" target="_blank">GitHub</a></div>
+    <div class="tool-bar"><button type="button" data-language-toggle>中 / EN</button></div>
   </header>
   <div class="panel">
     <input id="file" type="file" accept="image/*" />
@@ -39,7 +39,7 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
+  <script src="../../assets/vendor/cropper/cropper.min.js"></script>
   <script>
     const img = document.getElementById('img');
     const file = document.getElementById('file');
@@ -79,6 +79,7 @@
       if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
     });
   </script>
+  <script src="../../assets/js/i18n.js"></script><script>window.ToolkitPage={root:'../../',tool:true,title:'图片裁剪 / Image Cropper'};</script><script src="../../assets/js/site-shell.js"></script>
 </body>
 </html>
 

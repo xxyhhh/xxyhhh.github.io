@@ -8,15 +8,15 @@
   <style>
     .toolbar { padding:12px; border-bottom:1px solid var(--border); background: rgba(10,16,34,.6); display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
     /* 简化为单页构建器，无标签 */
-    input[type="text"], input[type="number"], select { padding:8px 10px; border-radius:10px; border:1px solid var(--border); background:#0f1a38; color:#e6e9f4; }
+    input[type="text"], input[type="number"], select { padding:8px 10px; border-radius:10px; border:1px solid var(--border); background:var(--surface-low); color:var(--text); }
     .row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
     .layout { padding:16px; display:grid; gap:16px; }
-    .card { border:1px solid var(--border); border-radius:12px; padding:16px; background:#0a122c; }
+    .card { border:1px solid var(--border); border-radius:12px; padding:16px; background:var(--surface-lowest); }
     .muted { color:#9aa3ba; }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
     .hidden { display:none; }
     .weekday { display:flex; gap:8px; }
-    .weekday label { padding:6px 8px; border:1px solid #243253; border-radius:8px; background:#0f1a38; cursor:pointer; }
+    .weekday label { padding:6px 8px; border:1px solid #243253; border-radius:8px; background:var(--surface-low); cursor:pointer; }
   </style>
   <script>
     const $ = id => document.getElementById(id);

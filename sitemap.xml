@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://xxyhhh.github.io/tools/</loc></url>
-  <url><loc>https://xxyhhh.github.io/tools/about.html</loc></url>
-  <url><loc>https://xxyhhh.github.io/tools/tools/idgen/</loc></url>
-  <url><loc>https://xxyhhh.github.io/tools/tools/regex/</loc></url>
-  <url><loc>https://xxyhhh.github.io/tools/tools/cron/</loc></url>
-  <url><loc>https://xxyhhh.github.io/tools/tools/qrcode/</loc></url>
-  <url><loc>https://xxyhhh.github.io/tools/tools/m3u8player/</loc></url>
-  <url><loc>https://xxyhhh.github.io/tools/tools/codec/</loc></url>
-  <url><loc>https://xxyhhh.github.io/tools/tools/data-convert/</loc></url>
-  <url><loc>https://xxyhhh.github.io/tools/tools/text-tools/</loc></url>
-  <url><loc>https://xxyhhh.github.io/tools/tools/image-tools/</loc></url>
+  <url><loc>https://xxyhhh.github.io/</loc></url>
+  <url><loc>https://xxyhhh.github.io/about.html</loc></url>
+  <url><loc>https://xxyhhh.github.io/tools/id-photo/</loc></url>
+  <url><loc>https://xxyhhh.github.io/tools/image-tools/</loc></url>
+  <url><loc>https://xxyhhh.github.io/tools/cropper/</loc></url>
+  <url><loc>https://xxyhhh.github.io/tools/time-converter/</loc></url>
+  <url><loc>https://xxyhhh.github.io/tools/text-tools/</loc></url>
+  <url><loc>https://xxyhhh.github.io/tools/codec/</loc></url>
+  <url><loc>https://xxyhhh.github.io/tools/data-convert/</loc></url>
+  <url><loc>https://xxyhhh.github.io/tools/idgen/</loc></url>
+  <url><loc>https://xxyhhh.github.io/tools/regex/</loc></url>
+  <url><loc>https://xxyhhh.github.io/tools/cron/</loc></url>
+  <url><loc>https://xxyhhh.github.io/tools/jwt/</loc></url>
+  <url><loc>https://xxyhhh.github.io/tools/qrcode/</loc></url>
 </urlset>
