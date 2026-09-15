@@ -13,6 +13,7 @@ test('cropper preview preserves CropperJS calculated image geometry', () => {
 })
 
 test('ID photo creates and validates a transparent subject layer in the model callback', () => {
+  assert.match(idPhoto, /refineAlphaMask/)
   assert.match(idPhoto, /results\.segmentationMask[\s\S]*source-in[\s\S]*drawImage\(source/)
   assert.match(idPhoto, /getImageData/)
   assert.match(idPhoto, /transparentPixels/)

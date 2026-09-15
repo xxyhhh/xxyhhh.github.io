@@ -1,5 +1,6 @@
 import { PHOTO_SIZES } from './sizes.mjs'
 import { createIdPhotoState } from './state.mjs'
+import { refineAlphaMask } from './mask-refinement.mjs'
 
 const state = createIdPhotoState()
 const file = document.querySelector('#photo')
@@ -58,7 +59,7 @@ cutout.onclick=async()=>{
   try{
     const engine=await loadSegmenter()
     const source=document.createElement('canvas');drawSource(source)
-    await new Promise(async(resolve,reject)=>{engine.onResults(results=>{try{const nextSubject=document.createElement('canvas');nextSubject.width=source.width;nextSubject.height=source.height;const subjectContext=nextSubject.getContext('2d',{willReadFrequently:true});subjectContext.clearRect(0,0,nextSubject.width,nextSubject.height);subjectContext.drawImage(results.segmentationMask,0,0,nextSubject.width,nextSubject.height);subjectContext.globalCompositeOperation='source-in';subjectContext.drawImage(source,0,0);subjectContext.globalCompositeOperation='source-over';const pixels=subjectContext.getImageData(0,0,nextSubject.width,nextSubject.height).data;let transparentPixels=0;for(let i=3;i<pixels.length;i+=4)if(pixels[i]<245)transparentPixels++;if(transparentPixels<pixels.length/4*.005)throw new Error('INVALID_MASK');subjectCanvas=nextSubject;resolve()}catch(error){reject(error)}});try{await engine.send({image:source})}catch(error){reject(error)}})
+    await new Promise(async(resolve,reject)=>{engine.onResults(results=>{try{const nextSubject=document.createElement('canvas');nextSubject.width=source.width;nextSubject.height=source.height;const subjectContext=nextSubject.getContext('2d',{willReadFrequently:true});subjectContext.clearRect(0,0,nextSubject.width,nextSubject.height);subjectContext.drawImage(results.segmentationMask,0,0,nextSubject.width,nextSubject.height);const maskPixels=subjectContext.getImageData(0,0,nextSubject.width,nextSubject.height);const alpha=new Uint8ClampedArray(nextSubject.width*nextSubject.height);for(let pixel=0;pixel<alpha.length;pixel++)alpha[pixel]=maskPixels.data[pixel*4+3];const refinedAlpha=refineAlphaMask(alpha,nextSubject.width,nextSubject.height);let transparentPixels=0;for(let pixel=0;pixel<refinedAlpha.length;pixel++){maskPixels.data[pixel*4]=255;maskPixels.data[pixel*4+1]=255;maskPixels.data[pixel*4+2]=255;maskPixels.data[pixel*4+3]=refinedAlpha[pixel];if(refinedAlpha[pixel]<245)transparentPixels++}if(transparentPixels<refinedAlpha.length*.005)throw new Error('INVALID_MASK');subjectContext.putImageData(maskPixels,0,0);subjectContext.globalCompositeOperation='source-in';subjectContext.drawImage(source,0,0);subjectContext.globalCompositeOperation='source-over';subjectCanvas=nextSubject;resolve()}catch(error){reject(error)}});try{await engine.send({image:source})}catch(error){reject(error)}})
     state.completeCutout();draw();status.textContent=ToolkitI18n.getLanguage()==='en'?'Cutout complete. Choose a background and download.':'抠图完成，可选择背景并下载。'
   }catch(error){state.failCutout();segmenterPromise=null;status.textContent=ToolkitI18n.getLanguage()==='en'?'Cutout unavailable. You can still export the original background.':'智能抠图暂不可用，仍可导出原背景照片。'}finally{cutout.disabled=false}
 }
